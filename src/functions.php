@@ -47,8 +47,10 @@ function uuid(): string
  *
  * @return \Generator<\Desperado\ServiceBus\Storage\ResultSet>
  *
- * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
  * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
+ * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
+ * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
+ * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
  */
 function find(QueryExecutor $queryExecutor, string $tableName, array $criteria = [], ?int $limit = null, array $orderBy = []): \Generator
 {
@@ -72,8 +74,10 @@ function find(QueryExecutor $queryExecutor, string $tableName, array $criteria =
  *
  * @return \Generator<int>
  *
- * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
  * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
+ * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
+ * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
+ * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
  */
 function remove(QueryExecutor $queryExecutor, string $tableName, array $criteria = []): \Generator
 {

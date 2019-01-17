@@ -144,8 +144,11 @@ abstract class Table
      *
      * @return Promise<static|null>
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\IncorrectParameterCast
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\OneResultExpected
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\ResultSetIterationFailed
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
      */
     final public static function find(QueryExecutor $queryExecutor, $id): Promise
     {
@@ -348,8 +351,12 @@ abstract class Table
      *
      * @return Promise Does not return result
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \Desperado\ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
      * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\IncorrectParameterCast
      */
     final public function remove(): Promise
     {
@@ -451,6 +458,12 @@ abstract class Table
      * @param array<string, string|int|float|null> $changeSet
      *
      * @return \Generator<string|int>
+     *
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\ResultSetIterationFailed
      */
     private function storeNewEntry(array $changeSet): \Generator
     {
@@ -499,7 +512,12 @@ abstract class Table
      *
      * @return \Generator<int>
      *
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed
      * @throws \Desperado\ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\IncorrectParameterCast
      */
     private function updateExistsEntry(array $changeSet): \Generator
     {

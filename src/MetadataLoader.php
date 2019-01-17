@@ -98,8 +98,12 @@ final class MetadataLoader
      *
      * @return \Generator<array<string, string>>
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\IncorrectParameterCast
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\ResultSetIterationFailed
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
      */
     private function loadColumns(string $table): \Generator
     {
