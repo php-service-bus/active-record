@@ -1,27 +1,26 @@
 <?php
 
 /**
- * PHP Service Bus (publish-subscribe pattern implementation) active record component
- * The simplest implementation of the "ActiveRecord" pattern
+ * PHP Service Bus (publish-subscribe pattern) active record implementation
  *
- * @author  Maksim Masiukevich <desperado@minsk-info.ru>
+ * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
  * @license https://opensource.org/licenses/MIT
  */
 
 declare(strict_types = 1);
 
-namespace Desperado\ServiceBus\ActiveRecord\Tests;
+namespace ServiceBus\ActiveRecord\Tests;
 
 use Amp\Promise;
 use function Amp\Promise\wait;
-use Desperado\ServiceBus\ActiveRecord\Tests\Stubs\SecondTestTable;
-use Desperado\ServiceBus\ActiveRecord\Tests\Stubs\TestTable;
-use function Desperado\ServiceBus\ActiveRecord\uuid;
-use Desperado\ServiceBus\Cache\InMemory\InMemoryStorage;
-use Desperado\ServiceBus\Storage\AmpPosgreSQL\AmpPostgreSQLAdapter;
-use Desperado\ServiceBus\Storage\StorageConfiguration;
+use ServiceBus\ActiveRecord\Tests\Stubs\SecondTestTable;
+use ServiceBus\ActiveRecord\Tests\Stubs\TestTable;
+use function ServiceBus\ActiveRecord\uuid;
+use ServiceBus\Cache\InMemory\InMemoryStorage;
 use PHPUnit\Framework\TestCase;
+use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
+use function ServiceBus\Storage\Sql\AmpPosgreSQL\postgreSqlAdapterFactory;
 
 /**
  *
@@ -44,9 +43,7 @@ final class TableTest extends TestCase
 
         InMemoryStorage::instance()->reset();
 
-        $this->adapter = new AmpPostgreSQLAdapter(
-            StorageConfiguration::fromDSN((string) \getenv('TEST_POSTGRES_DSN'))
-        );
+        $this->adapter = postgreSqlAdapterFactory((string) \getenv('TEST_POSTGRES_DSN'));
 
         $promise = $this->adapter->execute(<<<EOT
 CREATE TABLE IF NOT EXISTS test_table 

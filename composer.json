@@ -1,20 +1,20 @@
 {
-  "name": "mmasiukevich/active-record",
-  "description": "PHP Service Bus (publish-subscribe pattern) active record component",
+  "name": "php-service-bus/active-record",
+  "description": "PHP Service Bus (publish-subscribe pattern) active record implementation",
   "type": "library",
-  "keywords": [],
+  "keywords": ["cqrs", "event-sourcing", "async-php", "command-bus", "messaging"],
   "authors": [
     {
       "name": "Masiukevich Maksim",
-      "email": "desperado@minsk-info.ru",
+      "email": "dev@async-php.com",
       "homepage": "https://github.com/mmasiukevich",
-      "role": "Developer"
+      "role": "Maintainer"
     }
   ],
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Desperado\\ServiceBus\\ActiveRecord\\": "src/"
+      "ServiceBus\\ActiveRecord\\": "src/"
     },
     "files": [
       "src/functions.php"
@@ -22,7 +22,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Desperado\\ServiceBus\\ActiveRecord\\Tests\\": "tests/"
+      "ServiceBus\\ActiveRecord\\Tests\\": "tests/"
     },
     "files": [
       "src/functions.php"
@@ -31,8 +31,8 @@
   "require": {
     "php": ">=7.2",
     "ext-pgsql": "*",
-    "mmasiukevich/cache": "dev-master",
-    "mmasiukevich/storage": "dev-master",
+    "php-service-bus/cache": "dev-master",
+    "php-service-bus/storage-sql": "dev-master",
     "ramsey/uuid": "^3.7"
   },
   "require-dev": {

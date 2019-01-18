@@ -1,10 +1,9 @@
 <?php
 
 /**
- * PHP Service Bus (publish-subscribe pattern implementation) active record component
- * The simplest implementation of the "ActiveRecord" pattern
+ * PHP Service Bus (publish-subscribe pattern) active record implementation
  *
- * @author  Maksim Masiukevich <desperado@minsk-info.ru>
+ * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
  * @license https://opensource.org/licenses/MIT
  */
@@ -12,8 +11,8 @@
 declare(strict_types = 1);
 
 use Amp\Loop;
-use Desperado\ServiceBus\Storage\AmpPosgreSQL\AmpPostgreSQLAdapter;
-use Desperado\ServiceBus\Storage\StorageConfiguration;
+use ServiceBus\Storage\Common\StorageConfiguration;
+use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
 
 include __DIR__ . '/../vendor/autoload.php';
 

@@ -1,19 +1,18 @@
 <?php
 
 /**
- * PHP Service Bus (publish-subscribe pattern implementation) active record component
- * The simplest implementation of the "ActiveRecord" pattern
+ * PHP Service Bus (publish-subscribe pattern) active record implementation
  *
- * @author  Maksim Masiukevich <desperado@minsk-info.ru>
+ * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
  * @license https://opensource.org/licenses/MIT
  */
 
 declare(strict_types = 1);
 
-namespace Desperado\ServiceBus\ActiveRecord\Tests\Stubs;
+namespace ServiceBus\ActiveRecord\Tests\Stubs;
 
-use Desperado\ServiceBus\ActiveRecord\Table;
+use ServiceBus\ActiveRecord\Table;
 
 /**
  * @property string $id

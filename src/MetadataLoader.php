@@ -1,26 +1,25 @@
 <?php
 
 /**
- * PHP Service Bus (publish-subscribe pattern implementation) active record component
- * The simplest implementation of the "ActiveRecord" pattern
+ * PHP Service Bus (publish-subscribe pattern) active record implementation
  *
- * @author  Maksim Masiukevich <desperado@minsk-info.ru>
+ * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
  * @license https://opensource.org/licenses/MIT
  */
 
 declare(strict_types = 1);
 
-namespace Desperado\ServiceBus\ActiveRecord;
+namespace ServiceBus\ActiveRecord;
 
 use function Amp\call;
 use Amp\Promise;
-use Desperado\ServiceBus\Cache\CacheAdapter;
-use Desperado\ServiceBus\Cache\InMemory\InMemoryCacheAdapter;
-use function Desperado\ServiceBus\Storage\equalsCriteria;
-use function Desperado\ServiceBus\Storage\fetchAll;
-use Desperado\ServiceBus\Storage\QueryExecutor;
-use function Desperado\ServiceBus\Storage\selectQuery;
+use ServiceBus\Cache\CacheAdapter;
+use ServiceBus\Cache\InMemory\InMemoryCacheAdapter;
+use ServiceBus\Storage\Common\QueryExecutor;
+use function ServiceBus\Storage\Sql\equalsCriteria;
+use function ServiceBus\Storage\Sql\fetchAll;
+use function ServiceBus\Storage\Sql\selectQuery;
 
 /**
  * @internal
@@ -55,14 +54,15 @@ final class MetadataLoader
      *    ...
      * ]
      *
+     * @noinspection PhpDocRedundantThrowsInspection
      * @psalm-return \Amp\Promise
      *
      * @param string $table
      *
      * @return Promise<array<string, string>>
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      */
     public function columns(string $table): Promise
     {
@@ -98,12 +98,12 @@ final class MetadataLoader
      *
      * @return \Generator<array<string, string>>
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\IncorrectParameterCast
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ResultSetIterationFailed
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
+     * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
+     * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
      */
     private function loadColumns(string $table): \Generator
     {
@@ -115,7 +115,7 @@ final class MetadataLoader
 
         $compiledQuery = $queryBuilder->compile();
 
-        /** @var \Desperado\ServiceBus\Storage\ResultSet $resultSet */
+        /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
         $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
 
         /** @var array<int, array<string, string>> $columns */

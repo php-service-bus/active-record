@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bb276a4a5ec96a5d0d672e82e02c5868",
-    "content-hash": "95511b2b1051cbc740782807ddc2a201",
+    "hash": "20e9749eb86bf8d8bbc6119877316b7b",
+    "content-hash": "ae3b0fa1ed1875a371e8fa8bad21e9b3",
     "packages": [
         {
             "name": "amphp/amp",
@@ -325,99 +325,6 @@
             "time": "2018-12-28 15:13:26"
         },
         {
-            "name": "mmasiukevich/cache",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mmasiukevich/cache.git",
-                "reference": "a306ba066be77959c14a8db17791e7ee53cff2db"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mmasiukevich/cache/zipball/a306ba066be77959c14a8db17791e7ee53cff2db",
-                "reference": "a306ba066be77959c14a8db17791e7ee53cff2db",
-                "shasum": ""
-            },
-            "require": {
-                "amphp/amp": "^2",
-                "php": ">=7.2"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^7",
-                "vimeo/psalm": "^3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Desperado\\ServiceBus\\Cache\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Masiukevich Maksim",
-                    "email": "desperado@minsk-info.ru",
-                    "homepage": "https://github.com/mmasiukevich",
-                    "role": "Developer"
-                }
-            ],
-            "description": "PHP Service Bus (publish-subscribe pattern) cache component",
-            "time": "2019-01-16 12:48:20"
-        },
-        {
-            "name": "mmasiukevich/storage",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mmasiukevich/storage.git",
-                "reference": "d54692111630f26ec4b3d95731dcc8692e1da8bb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mmasiukevich/storage/zipball/d54692111630f26ec4b3d95731dcc8692e1da8bb",
-                "reference": "d54692111630f26ec4b3d95731dcc8692e1da8bb",
-                "shasum": ""
-            },
-            "require": {
-                "amphp/postgres": "^1",
-                "ext-pgsql": "*",
-                "latitude/latitude": "^3.1",
-                "php": ">=7.2",
-                "psr/log": "1.1.*"
-            },
-            "require-dev": {
-                "doctrine/dbal": "^v2.6",
-                "phpunit/phpunit": "^7",
-                "vimeo/psalm": "^3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Desperado\\ServiceBus\\Storage\\": "src/"
-                },
-                "files": [
-                    "src/functions.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Masiukevich Maksim",
-                    "email": "desperado@minsk-info.ru",
-                    "homepage": "https://github.com/mmasiukevich",
-                    "role": "Developer"
-                }
-            ],
-            "description": "PHP Service Bus (publish-subscribe pattern) storage component",
-            "time": "2019-01-17 07:42:37"
-        },
-        {
             "name": "paragonie/random_compat",
             "version": "v9.99.99",
             "source": {
@@ -461,6 +368,166 @@
                 "random"
             ],
             "time": "2018-07-02 15:55:56"
+        },
+        {
+            "name": "php-service-bus/cache",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-service-bus/cache.git",
+                "reference": "10d12040a2037c4ee5bfce8e3b9006b1c560972c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-service-bus/cache/zipball/10d12040a2037c4ee5bfce8e3b9006b1c560972c",
+                "reference": "10d12040a2037c4ee5bfce8e3b9006b1c560972c",
+                "shasum": ""
+            },
+            "require": {
+                "amphp/amp": "^2",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7",
+                "vimeo/psalm": "^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ServiceBus\\Cache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Masiukevich Maksim",
+                    "email": "dev@async-php.com",
+                    "homepage": "https://github.com/mmasiukevich",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "PHP Service Bus (publish-subscribe pattern) cache implementation",
+            "keywords": [
+                "async-php",
+                "command-bus",
+                "cqrs",
+                "event-sourcing",
+                "messaging"
+            ],
+            "time": "2019-01-18 21:40:06"
+        },
+        {
+            "name": "php-service-bus/storage-common",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-service-bus/storage-common.git",
+                "reference": "cfe1ecec451dc9b5db2b93781f2244f10a63bec4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-service-bus/storage-common/zipball/cfe1ecec451dc9b5db2b93781f2244f10a63bec4",
+                "reference": "cfe1ecec451dc9b5db2b93781f2244f10a63bec4",
+                "shasum": ""
+            },
+            "require": {
+                "amphp/amp": "^2",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7",
+                "vimeo/psalm": "^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ServiceBus\\Storage\\Common\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Masiukevich Maksim",
+                    "email": "dev@async-php.com",
+                    "homepage": "https://github.com/mmasiukevich",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "PHP Service Bus (publish-subscribe pattern) storage common parts",
+            "keywords": [
+                "async-php",
+                "command-bus",
+                "cqrs",
+                "event-sourcing",
+                "messaging"
+            ],
+            "time": "2019-01-18 20:38:41"
+        },
+        {
+            "name": "php-service-bus/storage-sql",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-service-bus/storage-sql.git",
+                "reference": "56320c3decad6638e86437ac8cd7fd04fc09a803"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-service-bus/storage-sql/zipball/56320c3decad6638e86437ac8cd7fd04fc09a803",
+                "reference": "56320c3decad6638e86437ac8cd7fd04fc09a803",
+                "shasum": ""
+            },
+            "require": {
+                "amphp/postgres": "^1",
+                "ext-pgsql": "*",
+                "latitude/latitude": "^3.1",
+                "php": ">=7.2",
+                "php-service-bus/storage-common": "dev-master",
+                "psr/log": "1.1.*"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^v2.6",
+                "phpunit/phpunit": "^7",
+                "vimeo/psalm": "^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ServiceBus\\Storage\\Sql\\": "src/"
+                },
+                "files": [
+                    "src/functions.php",
+                    "src/AmpPosgreSQL/functions.php",
+                    "src/DoctrineDBAL/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Masiukevich Maksim",
+                    "email": "dev@async-php.com",
+                    "homepage": "https://github.com/mmasiukevich",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "PHP Service Bus (publish-subscribe pattern) storage sql implementation",
+            "keywords": [
+                "async-php",
+                "command-bus",
+                "cqrs",
+                "event-sourcing",
+                "messaging"
+            ],
+            "time": "2019-01-18 21:33:37"
         },
         {
             "name": "psr/log",
@@ -636,7 +703,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "email": "backendtea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -2923,8 +2990,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "mmasiukevich/cache": 20,
-        "mmasiukevich/storage": 20
+        "php-service-bus/cache": 20,
+        "php-service-bus/storage-sql": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

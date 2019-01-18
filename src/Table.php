@@ -1,32 +1,31 @@
 <?php
 
 /**
- * PHP Service Bus (publish-subscribe pattern implementation) active record component
- * The simplest implementation of the "ActiveRecord" pattern
+ * PHP Service Bus (publish-subscribe pattern) active record implementation
  *
- * @author  Maksim Masiukevich <desperado@minsk-info.ru>
+ * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
  * @license https://opensource.org/licenses/MIT
  */
 
 declare(strict_types = 1);
 
-namespace Desperado\ServiceBus\ActiveRecord;
+namespace ServiceBus\ActiveRecord;
 
 use function Amp\call;
 use Amp\Coroutine;
 use Amp\Promise;
 use Amp\Success;
-use Desperado\ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified;
-use Desperado\ServiceBus\ActiveRecord\Exceptions\UnknownColumn;
-use Desperado\ServiceBus\ActiveRecord\Exceptions\UpdateRemovedEntry;
-use Desperado\ServiceBus\Storage\AmpPosgreSQL\AmpPostgreSQLAdapter;
-use function Desperado\ServiceBus\Storage\equalsCriteria;
-use function Desperado\ServiceBus\Storage\fetchAll;
-use function Desperado\ServiceBus\Storage\fetchOne;
-use function Desperado\ServiceBus\Storage\insertQuery;
-use Desperado\ServiceBus\Storage\QueryExecutor;
-use function Desperado\ServiceBus\Storage\updateQuery;
+use ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified;
+use ServiceBus\ActiveRecord\Exceptions\UnknownColumn;
+use ServiceBus\ActiveRecord\Exceptions\UpdateRemovedEntry;
+use ServiceBus\Storage\Common\QueryExecutor;
+use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
+use function ServiceBus\Storage\Sql\equalsCriteria;
+use function ServiceBus\Storage\Sql\fetchAll;
+use function ServiceBus\Storage\Sql\fetchOne;
+use function ServiceBus\Storage\Sql\insertQuery;
+use function ServiceBus\Storage\Sql\updateQuery;
 
 /**
  * @api
@@ -99,16 +98,17 @@ abstract class Table
     /**
      * Create and persist entry
      *
+     * @noinspection PhpDocRedundantThrowsInspection
      * @psalm-return \Amp\Promise
      *
      * @param QueryExecutor                        $queryExecutor
      * @param array<string, string|int|float|null> $data
      *
-     * @return Promise<\Desperado\ServiceBus\ActiveRecord\Table>
+     * @return Promise<\ServiceBus\ActiveRecord\Table>
      *
-     * @throws \Desperado\ServiceBus\ActiveRecord\Exceptions\UnknownColumn
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \ServiceBus\ActiveRecord\Exceptions\UnknownColumn
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      */
     final public static function new(QueryExecutor $queryExecutor, array $data): Promise
     {
@@ -144,11 +144,11 @@ abstract class Table
      *
      * @return Promise<static|null>
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\IncorrectParameterCast
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\OneResultExpected
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ResultSetIterationFailed
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
+     * @throws \ServiceBus\Storage\Common\Exceptions\OneResultExpected
+     * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      */
     final public static function find(QueryExecutor $queryExecutor, $id): Promise
     {
@@ -158,6 +158,7 @@ abstract class Table
     /**
      * Find one entry by specified criteria
      *
+     * @noinspection PhpDocRedundantThrowsInspection
      * @psalm-return \Amp\Promise
      *
      * @param QueryExecutor                                          $queryExecutor
@@ -165,10 +166,10 @@ abstract class Table
      *
      * @return Promise<static|null>
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ResultSetIterationFailed Error getting operation  result
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\OneResultExpected The result must contain only 1 row
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed Error getting operation  result
+     * @throws \ServiceBus\Storage\Common\Exceptions\OneResultExpected The result must contain only 1 row
      */
     final public static function findOneBy(QueryExecutor $queryExecutor, array $criteria): Promise
     {
@@ -178,7 +179,7 @@ abstract class Table
             {
                 /**
                  * @var array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
-                 * @var \Desperado\ServiceBus\Storage\ResultSet                $resultSet
+                 * @var \ServiceBus\Storage\Common\ResultSet                $resultSet
                  */
                 $resultSet = yield from find($queryExecutor, static::tableName(), $criteria);
 
@@ -199,6 +200,7 @@ abstract class Table
     /**
      * Find entries by specified criteria
      *
+     * @noinspection PhpDocRedundantThrowsInspection
      * @psalm-return \Amp\Promise
      *
      * @param QueryExecutor                                          $queryExecutor
@@ -208,9 +210,9 @@ abstract class Table
      *
      * @return Promise<array<int, static>>
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ResultSetIterationFailed Error getting operation  result
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed Error getting operation  result
      */
     final public static function findBy(
         QueryExecutor $queryExecutor,
@@ -225,7 +227,7 @@ abstract class Table
             {
                 /**
                  * @var array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
-                 * @var \Desperado\ServiceBus\Storage\ResultSet                $resultSet
+                 * @var \ServiceBus\Storage\Common\ResultSet                $resultSet
                  * @var array<string, string>                                  $orderBy
                  */
                 $resultSet = yield from find($queryExecutor, static::tableName(), $criteria, $limit, $orderBy);
@@ -260,14 +262,15 @@ abstract class Table
     /**
      * Save entry changes
      *
+     * @noinspection PhpDocRedundantThrowsInspection
      * @psalm-return \Amp\Promise
      *
      * @return Promise<string|int> Returns the ID of the saved entry, or the number of affected rows (in the case of an update)
      *
-     * @throws \Desperado\ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed Duplicate entry
+     * @throws \ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed Duplicate entry
      */
     final public function save(): Promise
     {
@@ -307,13 +310,14 @@ abstract class Table
     /**
      * Refresh entry data
      *
+     * @noinspection PhpDocRedundantThrowsInspection
      * @psalm-return \Amp\Promise
      *
      * @return Promise
      *
-     * @throws \Desperado\ServiceBus\ActiveRecord\Exceptions\UpdateRemovedEntry Unable to find an entry (possibly RC occured)
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \ServiceBus\ActiveRecord\Exceptions\UpdateRemovedEntry Unable to find an entry (possibly RC occured)
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      */
     public function refresh(): Promise
     {
@@ -321,7 +325,7 @@ abstract class Table
         return call(
             function(): \Generator
             {
-                /** @var \Desperado\ServiceBus\Storage\ResultSet $resultSet */
+                /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
                 $resultSet = yield from find(
                     $this->queryExecutor,
                     static::tableName(),
@@ -351,12 +355,13 @@ abstract class Table
      *
      * @return Promise Does not return result
      *
-     * @throws \Desperado\ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\IncorrectParameterCast
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
+     * @throws \ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
      */
     final public function remove(): Promise
     {
@@ -405,7 +410,7 @@ abstract class Table
      *
      * @return void
      *
-     * @throws \Desperado\ServiceBus\ActiveRecord\Exceptions\UnknownColumn
+     * @throws \ServiceBus\ActiveRecord\Exceptions\UnknownColumn
      */
     final public function __set(string $name, $value): void
     {
@@ -459,11 +464,12 @@ abstract class Table
      *
      * @return \Generator<string|int>
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ResultSetIterationFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
+     * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      */
     private function storeNewEntry(array $changeSet): \Generator
     {
@@ -488,7 +494,7 @@ abstract class Table
 
         $compiledQuery = $queryBuilder->compile();
 
-        /** @var \Desperado\ServiceBus\Storage\ResultSet $resultSet */
+        /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
         $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
 
         $insertedEntryId = $resultSet->lastInsertId();
@@ -512,12 +518,13 @@ abstract class Table
      *
      * @return \Generator<int>
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed
-     * @throws \Desperado\ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\IncorrectParameterCast
+     * @throws \ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
+     * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed
+     * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
+     * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      */
     private function updateExistsEntry(array $changeSet): \Generator
     {
@@ -530,7 +537,7 @@ abstract class Table
             [equalsCriteria(static::primaryKey(), $this->searchPrimaryKeyValue())]
         );
 
-        /** @var \Desperado\ServiceBus\Storage\ResultSet $resultSet */
+        /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
         $resultSet = yield $this->queryExecutor->execute($query, $parameters);
 
         $this->changes = [];
@@ -544,7 +551,7 @@ abstract class Table
     /**
      * @return string
      *
-     * @throws \Desperado\ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
+     * @throws \ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
      */
     private function searchPrimaryKeyValue(): string
     {
@@ -569,8 +576,8 @@ abstract class Table
      *
      * @return \Generator<static>
      *
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
-     * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
+     * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+     * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      */
     private static function create(QueryExecutor $queryExecutor, array $data, bool $isNew): \Generator
     {

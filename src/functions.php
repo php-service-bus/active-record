@@ -1,24 +1,23 @@
 <?php
 
 /**
- * PHP Service Bus (publish-subscribe pattern implementation) active record component
- * The simplest implementation of the "ActiveRecord" pattern
+ * PHP Service Bus (publish-subscribe pattern) active record implementation
  *
- * @author  Maksim Masiukevich <desperado@minsk-info.ru>
+ * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
  * @license https://opensource.org/licenses/MIT
  */
 
 declare(strict_types = 1);
 
-namespace Desperado\ServiceBus\ActiveRecord;
+namespace ServiceBus\ActiveRecord;
 
-use Desperado\ServiceBus\Storage\BinaryDataDecoder;
-use function Desperado\ServiceBus\Storage\deleteQuery;
-use Desperado\ServiceBus\Storage\QueryExecutor;
-use function Desperado\ServiceBus\Storage\selectQuery;
 use Latitude\QueryBuilder\Query as LatitudeQuery;
 use Ramsey\Uuid\Uuid;
+use ServiceBus\Storage\Common\BinaryDataDecoder;
+use ServiceBus\Storage\Common\QueryExecutor;
+use function ServiceBus\Storage\Sql\deleteQuery;
+use function ServiceBus\Storage\Sql\selectQuery;
 
 /**
  * @noinspection PhpDocMissingThrowsInspection
@@ -45,12 +44,12 @@ function uuid(): string
  * @param int|null                                               $limit
  * @param array<string, string>                                  $orderBy
  *
- * @return \Generator<\Desperado\ServiceBus\Storage\ResultSet>
+ * @return \Generator<\ServiceBus\Storage\Common\ResultSet>
  *
- * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
- * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
- * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
- * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
+ * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
+ * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
+ * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+ * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
  */
 function find(QueryExecutor $queryExecutor, string $tableName, array $criteria = [], ?int $limit = null, array $orderBy = []): \Generator
 {
@@ -74,10 +73,11 @@ function find(QueryExecutor $queryExecutor, string $tableName, array $criteria =
  *
  * @return \Generator<int>
  *
- * @throws \Desperado\ServiceBus\Storage\Exceptions\ConnectionFailed Could not connect to database
- * @throws \Desperado\ServiceBus\Storage\Exceptions\InvalidConfigurationOptions
- * @throws \Desperado\ServiceBus\Storage\Exceptions\StorageInteractingFailed Basic type of interaction errors
- * @throws \Desperado\ServiceBus\Storage\Exceptions\UniqueConstraintViolationCheckFailed
+ * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
+ * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
+ * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
+ * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
+ * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
  */
 function remove(QueryExecutor $queryExecutor, string $tableName, array $criteria = []): \Generator
 {
@@ -87,7 +87,7 @@ function remove(QueryExecutor $queryExecutor, string $tableName, array $criteria
      */
     [$query, $parameters] = buildQuery(deleteQuery($tableName), $criteria);
 
-    /** @var \Desperado\ServiceBus\Storage\ResultSet $resultSet */
+    /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
     $resultSet = yield $queryExecutor->execute($query, $parameters);
 
     $affectedRows = $resultSet->affectedRows();

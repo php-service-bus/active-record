@@ -18,6 +18,7 @@
     <testsuites>
         <testsuite name="Service Bus active record component">
             <directory>./tests/</directory>
+            <directory>./examples/</directory>
         </testsuite>
     </testsuites>
 
