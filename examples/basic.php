@@ -17,7 +17,7 @@ use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
 include __DIR__ . '/../vendor/autoload.php';
 
 $adapter = new AmpPostgreSQLAdapter(
-    StorageConfiguration::fromDSN('pgsql://postgres:123456789@localhost:5432/test')
+    new StorageConfiguration('pgsql://postgres:123456789@localhost:5432/test')
 );
 
 Loop::run(
