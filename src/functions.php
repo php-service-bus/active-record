@@ -10,7 +10,7 @@
 
 declare(strict_types = 1);
 
-namespace ServiceBus\Storage\Sql\ActiveRecord;
+namespace ServiceBus\Storage\ActiveRecord;
 
 use Latitude\QueryBuilder\Query as LatitudeQuery;
 use Ramsey\Uuid\Uuid;

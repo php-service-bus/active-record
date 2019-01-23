@@ -10,12 +10,12 @@
 
 declare(strict_types = 1);
 
-namespace ServiceBus\Storage\Sql\ActiveRecord;
+namespace ServiceBus\Storage\ActiveRecord;
 
 use function Amp\call;
 use Amp\Promise;
-use ServiceBus\Infrastructure\Cache\CacheAdapter;
-use ServiceBus\Infrastructure\Cache\InMemory\InMemoryCacheAdapter;
+use ServiceBus\Cache\CacheAdapter;
+use ServiceBus\Cache\InMemory\InMemoryCacheAdapter;
 use ServiceBus\Storage\Common\QueryExecutor;
 use function ServiceBus\Storage\Sql\equalsCriteria;
 use function ServiceBus\Storage\Sql\fetchAll;

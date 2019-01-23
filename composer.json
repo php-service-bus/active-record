@@ -14,7 +14,7 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "ServiceBus\\Storage\\Sql\\ActiveRecord\\": "src/"
+      "ServiceBus\\Storage\\ActiveRecord\\": "src/"
     },
     "files": [
       "src/functions.php"
@@ -22,7 +22,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "ServiceBus\\Storage\\Sql\\ActiveRecord\\Tests\\": "tests/",
+      "ServiceBus\\Storage\\ActiveRecord\\Tests\\": "tests/",
       "ServiceBus\\Storage\\Sql\\": "vendor/php-service-bus/storage-sql/tests"
     },
     "files": [

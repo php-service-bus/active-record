@@ -10,7 +10,7 @@
 
 declare(strict_types = 1);
 
-namespace ServiceBus\Storage\Sql\ActiveRecord\Exceptions;
+namespace ServiceBus\Storage\ActiveRecord\Exceptions;
 
 /**
  *

@@ -10,15 +10,15 @@
 
 declare(strict_types = 1);
 
-namespace ServiceBus\Storage\Sql\ActiveRecord\Tests;
+namespace ServiceBus\Storage\ActiveRecord\Tests;
 
 use Amp\Promise;
 use function Amp\Promise\wait;
 use PHPUnit\Framework\TestCase;
-use ServiceBus\Infrastructure\Cache\InMemory\InMemoryStorage;
-use ServiceBus\Storage\Sql\ActiveRecord\Tests\Stubs\SecondTestTable;
-use ServiceBus\Storage\Sql\ActiveRecord\Tests\Stubs\TestTable;
-use function ServiceBus\Storage\Sql\ActiveRecord\uuid;
+use ServiceBus\Cache\InMemory\InMemoryStorage;
+use ServiceBus\Storage\ActiveRecord\Tests\Stubs\SecondTestTable;
+use ServiceBus\Storage\ActiveRecord\Tests\Stubs\TestTable;
+use function ServiceBus\Storage\ActiveRecord\uuid;
 use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
 use function ServiceBus\Storage\Sql\AmpPosgreSQL\postgreSqlAdapterFactory;
 

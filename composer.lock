@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "512348ef7dd6e7dbd7272e1a871d0d88",
+    "hash": "0c24fe6f4f41afe30bad10ba40336a07",
     "content-hash": "bcff4992d28d74172b2b383c35ee84e4",
     "packages": [
         {
@@ -375,12 +375,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-service-bus/cache.git",
-                "reference": "cdd3f753a9161174c005442d0e8f8c6415ca0978"
+                "reference": "7acb960cc1c319406c1465bbd547b2ce88703cca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-service-bus/cache/zipball/cdd3f753a9161174c005442d0e8f8c6415ca0978",
-                "reference": "cdd3f753a9161174c005442d0e8f8c6415ca0978",
+                "url": "https://api.github.com/repos/php-service-bus/cache/zipball/7acb960cc1c319406c1465bbd547b2ce88703cca",
+                "reference": "7acb960cc1c319406c1465bbd547b2ce88703cca",
                 "shasum": ""
             },
             "require": {
@@ -394,7 +394,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "ServiceBus\\Infrastructure\\Cache\\": "src/"
+                    "ServiceBus\\Cache\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -417,7 +417,7 @@
                 "event-sourcing",
                 "messaging"
             ],
-            "time": "2019-01-23 12:31:21"
+            "time": "2019-01-23 13:35:05"
         },
         {
             "name": "php-service-bus/storage-common",

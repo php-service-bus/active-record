@@ -10,9 +10,9 @@
 
 declare(strict_types = 1);
 
-namespace ServiceBus\Storage\Sql\ActiveRecord\Tests\Stubs;
+namespace ServiceBus\Storage\ActiveRecord\Tests\Stubs;
 
-use ServiceBus\Storage\Sql\ActiveRecord\Table;
+use ServiceBus\Storage\ActiveRecord\Table;
 
 /**
  * @property string   $title
