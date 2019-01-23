@@ -1,6 +1,6 @@
 {
   "name": "php-service-bus/active-record",
-  "description": "PHP Service Bus (publish-subscribe pattern) active record implementation",
+  "description": "PHP Service Bus active record implementation",
   "type": "library",
   "keywords": ["cqrs", "event-sourcing", "async-php", "command-bus", "messaging"],
   "authors": [
@@ -14,7 +14,7 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "ServiceBus\\ActiveRecord\\": "src/"
+      "ServiceBus\\Storage\\Sql\\ActiveRecord\\": "src/"
     },
     "files": [
       "src/functions.php"
@@ -22,7 +22,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "ServiceBus\\ActiveRecord\\Tests\\": "tests/"
+      "ServiceBus\\Storage\\Sql\\ActiveRecord\\Tests\\": "tests/",
+      "ServiceBus\\Storage\\Sql\\": "vendor/php-service-bus/storage-sql/tests"
     },
     "files": [
       "src/functions.php"
@@ -37,7 +38,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^7",
-    "vimeo/psalm": "^3"
+    "vimeo/psalm": "^3",
+    "doctrine/dbal": "^v2.6"
   },
   "prefer-stable": true,
   "minimum-stability": "dev",

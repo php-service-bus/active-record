@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "20e9749eb86bf8d8bbc6119877316b7b",
-    "content-hash": "ae3b0fa1ed1875a371e8fa8bad21e9b3",
+    "hash": "512348ef7dd6e7dbd7272e1a871d0d88",
+    "content-hash": "bcff4992d28d74172b2b383c35ee84e4",
     "packages": [
         {
             "name": "amphp/amp",
@@ -375,26 +375,26 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-service-bus/cache.git",
-                "reference": "10d12040a2037c4ee5bfce8e3b9006b1c560972c"
+                "reference": "cdd3f753a9161174c005442d0e8f8c6415ca0978"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-service-bus/cache/zipball/10d12040a2037c4ee5bfce8e3b9006b1c560972c",
-                "reference": "10d12040a2037c4ee5bfce8e3b9006b1c560972c",
+                "url": "https://api.github.com/repos/php-service-bus/cache/zipball/cdd3f753a9161174c005442d0e8f8c6415ca0978",
+                "reference": "cdd3f753a9161174c005442d0e8f8c6415ca0978",
                 "shasum": ""
             },
             "require": {
-                "amphp/amp": "^2",
                 "php": ">=7.2"
             },
             "require-dev": {
+                "amphp/amp": "^2",
                 "phpunit/phpunit": "^7",
                 "vimeo/psalm": "^3"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "ServiceBus\\Cache\\": "src/"
+                    "ServiceBus\\Infrastructure\\Cache\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -409,7 +409,7 @@
                     "role": "Maintainer"
                 }
             ],
-            "description": "PHP Service Bus (publish-subscribe pattern) cache implementation",
+            "description": "PHP Service Bus simple cache implementation",
             "keywords": [
                 "async-php",
                 "command-bus",
@@ -417,7 +417,7 @@
                 "event-sourcing",
                 "messaging"
             ],
-            "time": "2019-01-18 21:40:06"
+            "time": "2019-01-23 12:31:21"
         },
         {
             "name": "php-service-bus/storage-common",
@@ -425,19 +425,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-service-bus/storage-common.git",
-                "reference": "cfe1ecec451dc9b5db2b93781f2244f10a63bec4"
+                "reference": "d1273c08665937593d946461018c25f31dd8debd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-service-bus/storage-common/zipball/cfe1ecec451dc9b5db2b93781f2244f10a63bec4",
-                "reference": "cfe1ecec451dc9b5db2b93781f2244f10a63bec4",
+                "url": "https://api.github.com/repos/php-service-bus/storage-common/zipball/d1273c08665937593d946461018c25f31dd8debd",
+                "reference": "d1273c08665937593d946461018c25f31dd8debd",
                 "shasum": ""
             },
             "require": {
-                "amphp/amp": "^2",
                 "php": ">=7.2"
             },
             "require-dev": {
+                "amphp/amp": "^2",
                 "phpunit/phpunit": "^7",
                 "vimeo/psalm": "^3"
             },
@@ -467,7 +467,7 @@
                 "event-sourcing",
                 "messaging"
             ],
-            "time": "2019-01-18 20:38:41"
+            "time": "2019-01-23 09:44:14"
         },
         {
             "name": "php-service-bus/storage-sql",
@@ -475,12 +475,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-service-bus/storage-sql.git",
-                "reference": "56320c3decad6638e86437ac8cd7fd04fc09a803"
+                "reference": "0726274d13fd1969c24993aa7cabc4be69a45478"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-service-bus/storage-sql/zipball/56320c3decad6638e86437ac8cd7fd04fc09a803",
-                "reference": "56320c3decad6638e86437ac8cd7fd04fc09a803",
+                "url": "https://api.github.com/repos/php-service-bus/storage-sql/zipball/0726274d13fd1969c24993aa7cabc4be69a45478",
+                "reference": "0726274d13fd1969c24993aa7cabc4be69a45478",
                 "shasum": ""
             },
             "require": {
@@ -519,7 +519,7 @@
                     "role": "Maintainer"
                 }
             ],
-            "description": "PHP Service Bus (publish-subscribe pattern) storage sql implementation",
+            "description": "PHP Service Bus SQL storage implementation",
             "keywords": [
                 "async-php",
                 "command-bus",
@@ -527,7 +527,7 @@
                 "event-sourcing",
                 "messaging"
             ],
-            "time": "2019-01-18 21:33:37"
+            "time": "2019-01-23 11:16:25"
         },
         {
             "name": "psr/log",
@@ -761,6 +761,237 @@
                 "performance"
             ],
             "time": "2018-11-29 10:59:02"
+        },
+        {
+            "name": "doctrine/cache",
+            "version": "v1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/cache.git",
+                "reference": "d768d58baee9a4862ca783840eca1b9add7a7f57"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/d768d58baee9a4862ca783840eca1b9add7a7f57",
+                "reference": "d768d58baee9a4862ca783840eca1b9add7a7f57",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.1"
+            },
+            "conflict": {
+                "doctrine/common": ">2.2,<2.4"
+            },
+            "require-dev": {
+                "alcaeus/mongo-php-adapter": "^1.1",
+                "doctrine/coding-standard": "^4.0",
+                "mongodb/mongodb": "^1.1",
+                "phpunit/phpunit": "^7.0",
+                "predis/predis": "~1.0"
+            },
+            "suggest": {
+                "alcaeus/mongo-php-adapter": "Required to use legacy MongoDB driver"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\Common\\Cache\\": "lib/Doctrine/Common/Cache"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
+                },
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com"
+                },
+                {
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com"
+                }
+            ],
+            "description": "Caching library offering an object-oriented API for many cache backends",
+            "homepage": "https://www.doctrine-project.org",
+            "keywords": [
+                "cache",
+                "caching"
+            ],
+            "time": "2018-08-21 18:01:43"
+        },
+        {
+            "name": "doctrine/dbal",
+            "version": "v2.9.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/dbal.git",
+                "reference": "22800bd651c1d8d2a9719e2a3dc46d5108ebfcc9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/22800bd651c1d8d2a9719e2a3dc46d5108ebfcc9",
+                "reference": "22800bd651c1d8d2a9719e2a3dc46d5108ebfcc9",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/cache": "^1.0",
+                "doctrine/event-manager": "^1.0",
+                "ext-pdo": "*",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^5.0",
+                "jetbrains/phpstorm-stubs": "^2018.1.2",
+                "phpstan/phpstan": "^0.10.1",
+                "phpunit/phpunit": "^7.4",
+                "symfony/console": "^2.0.5|^3.0|^4.0",
+                "symfony/phpunit-bridge": "^3.4.5|^4.0.5"
+            },
+            "suggest": {
+                "symfony/console": "For helpful console commands such as SQL execution and import of files."
+            },
+            "bin": [
+                "bin/doctrine-dbal"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.9.x-dev",
+                    "dev-develop": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\DBAL\\": "lib/Doctrine/DBAL"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
+                },
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com"
+                }
+            ],
+            "description": "Powerful PHP database abstraction layer (DBAL) with many features for database schema introspection and management.",
+            "homepage": "https://www.doctrine-project.org/projects/dbal.html",
+            "keywords": [
+                "abstraction",
+                "database",
+                "dbal",
+                "mysql",
+                "persistence",
+                "pgsql",
+                "php",
+                "queryobject"
+            ],
+            "time": "2018-12-31 03:27:51"
+        },
+        {
+            "name": "doctrine/event-manager",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/event-manager.git",
+                "reference": "a520bc093a0170feeb6b14e9d83f3a14452e64b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/event-manager/zipball/a520bc093a0170feeb6b14e9d83f3a14452e64b3",
+                "reference": "a520bc093a0170feeb6b14e9d83f3a14452e64b3",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1"
+            },
+            "conflict": {
+                "doctrine/common": "<2.9@dev"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^4.0",
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\Common\\": "lib/Doctrine/Common"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
+                },
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com"
+                },
+                {
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com"
+                },
+                {
+                    "name": "Marco Pivetta",
+                    "email": "ocramius@gmail.com"
+                }
+            ],
+            "description": "Doctrine Event Manager component",
+            "homepage": "https://www.doctrine-project.org/projects/event-manager.html",
+            "keywords": [
+                "event",
+                "eventdispatcher",
+                "eventmanager"
+            ],
+            "time": "2018-06-11 11:59:03"
         },
         {
             "name": "doctrine/instantiator",
@@ -1915,57 +2146,6 @@
             "time": "2018-03-05 13:55:47"
         },
         {
-            "name": "sabre/uri",
-            "version": "2.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sabre-io/uri.git",
-                "reference": "a42126042c7dcb53e2978dadb6d22574d1359b4c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/uri/zipball/a42126042c7dcb53e2978dadb6d22574d1359b4c",
-                "reference": "a42126042c7dcb53e2978dadb6d22574d1359b4c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.0",
-                "sabre/cs": "~1.0.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "lib/functions.php"
-                ],
-                "psr-4": {
-                    "Sabre\\Uri\\": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Evert Pot",
-                    "email": "me@evertpot.com",
-                    "homepage": "http://evertpot.com/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Functions for making sense out of URIs.",
-            "homepage": "http://sabre.io/uri/",
-            "keywords": [
-                "rfc3986",
-                "uri",
-                "url"
-            ],
-            "time": "2017-02-20 20:02:35"
-        },
-        {
             "name": "sebastian/code-unit-reverse-lookup",
             "version": "1.0.1",
             "source": {
@@ -2766,16 +2946,16 @@
         },
         {
             "name": "vimeo/psalm",
-            "version": "3.0.11",
+            "version": "3.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "3ca5ec9281ab2ab3b3caf83bfdd7ed085d3c2ecb"
+                "reference": "279912cb5566c4b5394af9ac4f8cbd8c9a2b9450"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/3ca5ec9281ab2ab3b3caf83bfdd7ed085d3c2ecb",
-                "reference": "3ca5ec9281ab2ab3b3caf83bfdd7ed085d3c2ecb",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/279912cb5566c4b5394af9ac4f8cbd8c9a2b9450",
+                "reference": "279912cb5566c4b5394af9ac4f8cbd8c9a2b9450",
                 "shasum": ""
             },
             "require": {
@@ -2789,7 +2969,6 @@
                 "php": "^7.0",
                 "php-cs-fixer/diff": "^1.2",
                 "sabre/event": "^5.0.1",
-                "sabre/uri": "^2.0",
                 "symfony/console": "^3.0||^4.0",
                 "webmozart/glob": "^4.1",
                 "webmozart/path-util": "^2.3"
@@ -2840,7 +3019,7 @@
                 "inspection",
                 "php"
             ],
-            "time": "2019-01-13 19:40:21"
+            "time": "2019-01-20 17:50:47"
         },
         {
             "name": "webmozart/assert",

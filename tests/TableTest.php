@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PHP Service Bus (publish-subscribe pattern) active record implementation
+ * PHP Service Bus active record implementation
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
@@ -10,15 +10,15 @@
 
 declare(strict_types = 1);
 
-namespace ServiceBus\ActiveRecord\Tests;
+namespace ServiceBus\Storage\Sql\ActiveRecord\Tests;
 
 use Amp\Promise;
 use function Amp\Promise\wait;
-use ServiceBus\ActiveRecord\Tests\Stubs\SecondTestTable;
-use ServiceBus\ActiveRecord\Tests\Stubs\TestTable;
-use function ServiceBus\ActiveRecord\uuid;
-use ServiceBus\Cache\InMemory\InMemoryStorage;
 use PHPUnit\Framework\TestCase;
+use ServiceBus\Infrastructure\Cache\InMemory\InMemoryStorage;
+use ServiceBus\Storage\Sql\ActiveRecord\Tests\Stubs\SecondTestTable;
+use ServiceBus\Storage\Sql\ActiveRecord\Tests\Stubs\TestTable;
+use function ServiceBus\Storage\Sql\ActiveRecord\uuid;
 use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
 use function ServiceBus\Storage\Sql\AmpPosgreSQL\postgreSqlAdapterFactory;
 

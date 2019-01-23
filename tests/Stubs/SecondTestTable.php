@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PHP Service Bus (publish-subscribe pattern) active record implementation
+ * PHP Service Bus active record implementation
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
@@ -10,9 +10,9 @@
 
 declare(strict_types = 1);
 
-namespace ServiceBus\ActiveRecord\Tests\Stubs;
+namespace ServiceBus\Storage\Sql\ActiveRecord\Tests\Stubs;
 
-use ServiceBus\ActiveRecord\Table;
+use ServiceBus\Storage\Sql\ActiveRecord\Table;
 
 /**
  * @property string   $title

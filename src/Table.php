@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PHP Service Bus (publish-subscribe pattern) active record implementation
+ * PHP Service Bus active record implementation
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
@@ -10,16 +10,16 @@
 
 declare(strict_types = 1);
 
-namespace ServiceBus\ActiveRecord;
+namespace ServiceBus\Storage\Sql\ActiveRecord;
 
 use function Amp\call;
 use Amp\Coroutine;
 use Amp\Promise;
 use Amp\Success;
-use ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified;
-use ServiceBus\ActiveRecord\Exceptions\UnknownColumn;
-use ServiceBus\ActiveRecord\Exceptions\UpdateRemovedEntry;
 use ServiceBus\Storage\Common\QueryExecutor;
+use ServiceBus\Storage\Sql\ActiveRecord\Exceptions\PrimaryKeyNotSpecified;
+use ServiceBus\Storage\Sql\ActiveRecord\Exceptions\UnknownColumn;
+use ServiceBus\Storage\Sql\ActiveRecord\Exceptions\UpdateRemovedEntry;
 use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
 use function ServiceBus\Storage\Sql\equalsCriteria;
 use function ServiceBus\Storage\Sql\fetchAll;
@@ -104,9 +104,9 @@ abstract class Table
      * @param QueryExecutor                        $queryExecutor
      * @param array<string, string|int|float|null> $data
      *
-     * @return Promise<\ServiceBus\ActiveRecord\Table>
+     * @return Promise<\ServiceBus\Storage\Sql\ActiveRecord\Table>
      *
-     * @throws \ServiceBus\ActiveRecord\Exceptions\UnknownColumn
+     * @throws \ServiceBus\Storage\Sql\ActiveRecord\Exceptions\UnknownColumn
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      */
@@ -267,7 +267,7 @@ abstract class Table
      *
      * @return Promise<string|int> Returns the ID of the saved entry, or the number of affected rows (in the case of an update)
      *
-     * @throws \ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
+     * @throws \ServiceBus\Storage\Sql\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed Duplicate entry
@@ -315,7 +315,7 @@ abstract class Table
      *
      * @return Promise
      *
-     * @throws \ServiceBus\ActiveRecord\Exceptions\UpdateRemovedEntry Unable to find an entry (possibly RC occured)
+     * @throws \ServiceBus\Storage\Sql\ActiveRecord\Exceptions\UpdateRemovedEntry Unable to find an entry (possibly RC occured)
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      */
@@ -361,7 +361,7 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
-     * @throws \ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
+     * @throws \ServiceBus\Storage\Sql\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
      */
     final public function remove(): Promise
     {
@@ -410,7 +410,7 @@ abstract class Table
      *
      * @return void
      *
-     * @throws \ServiceBus\ActiveRecord\Exceptions\UnknownColumn
+     * @throws \ServiceBus\Storage\Sql\ActiveRecord\Exceptions\UnknownColumn
      */
     final public function __set(string $name, $value): void
     {
@@ -518,7 +518,7 @@ abstract class Table
      *
      * @return \Generator<int>
      *
-     * @throws \ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
+     * @throws \ServiceBus\Storage\Sql\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
      * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed
      * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
@@ -551,7 +551,7 @@ abstract class Table
     /**
      * @return string
      *
-     * @throws \ServiceBus\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
+     * @throws \ServiceBus\Storage\Sql\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
      */
     private function searchPrimaryKeyValue(): string
     {
