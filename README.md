@@ -26,7 +26,7 @@ final class QwertyTable extends Table
 }
 ```
 
-### Load
+##### Load
 ```php
 $adapter = new AmpPostgreSQLAdapter(
     new StorageConfiguration('pgsql://postgres:123456789@localhost:5432/test')
@@ -47,7 +47,7 @@ Loop::run(
 );
 ```
 
-### Add\Update\Remove
+##### Add\Update\Remove
 ```php
 $adapter = new AmpPostgreSQLAdapter(
     new StorageConfiguration('pgsql://postgres:123456789@localhost:5432/test')
