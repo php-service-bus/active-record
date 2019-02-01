@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PHP Service Bus active record implementation
+ * Active record implementation
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
@@ -59,6 +59,7 @@ function find(QueryExecutor $queryExecutor, string $tableName, array $criteria =
      */
     [$query, $parameters] = buildQuery(selectQuery($tableName), $criteria, $orderBy, $limit);
 
+    /** @psalm-suppress TooManyTemplateParams Wrong Promise template */
     return yield $queryExecutor->execute($query, $parameters);
 }
 
@@ -87,7 +88,10 @@ function remove(QueryExecutor $queryExecutor, string $tableName, array $criteria
      */
     [$query, $parameters] = buildQuery(deleteQuery($tableName), $criteria);
 
-    /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
+    /**
+     * @psalm-suppress TooManyTemplateParams Wrong Promise template
+     * @var \ServiceBus\Storage\Common\ResultSet $resultSet
+     */
     $resultSet = yield $queryExecutor->execute($query, $parameters);
 
     $affectedRows = $resultSet->affectedRows();

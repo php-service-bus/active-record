@@ -16,21 +16,19 @@
     </php>
 
     <testsuites>
-        <testsuite name="Service Bus active record component">
-            <directory>./tests/</directory>
-        </testsuite>
 
-        <testsuite name="Service Bus cache component">
-            <directory>./vendor/php-service-bus/cache/tests</directory>
-        </testsuite>
-
-        <testsuite name="Service Bus common storage component">
+        <testsuite name="Common storage parts">
             <directory>./vendor/php-service-bus/storage-common/tests</directory>
         </testsuite>
 
-        <testsuite name="Service Bus sql storage implementation component">
-            <directory>./vendor/php-service-bus/storage-sql/tests</directory>
+        <testsuite name="Cache implementation">
+            <directory>./vendor/php-service-bus/cache/tests</directory>
         </testsuite>
+
+        <testsuite name="SQL databases adapters implementation">
+            <directory>./tests/</directory>
+        </testsuite>
+
     </testsuites>
 
     <filter>

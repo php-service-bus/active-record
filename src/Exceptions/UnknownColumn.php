@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PHP Service Bus active record implementation
+ * Active record implementation
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT

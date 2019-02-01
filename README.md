@@ -4,7 +4,7 @@
 
 ## What is it?
 
-Active Record pattern implementation for use in [service-bus](https://github.com/php-service-bus/service-bus) framework.
+Simple Active Record pattern implementation
 
 ## Examples
 

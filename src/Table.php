@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PHP Service Bus active record implementation
+ * Active record implementation
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
@@ -494,7 +494,10 @@ abstract class Table
 
         $compiledQuery = $queryBuilder->compile();
 
-        /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
+        /**
+         * @psalm-suppress TooManyTemplateParams Wrong Promise template
+         * @var \ServiceBus\Storage\Common\ResultSet $resultSet
+         */
         $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
 
         $insertedEntryId = $resultSet->lastInsertId();
@@ -537,7 +540,10 @@ abstract class Table
             [equalsCriteria(static::primaryKey(), $this->searchPrimaryKeyValue())]
         );
 
-        /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
+        /**
+         * @psalm-suppress TooManyTemplateParams Wrong Promise template
+         * @var \ServiceBus\Storage\Common\ResultSet $resultSet
+         */
         $resultSet = yield $this->queryExecutor->execute($query, $parameters);
 
         $this->changes = [];

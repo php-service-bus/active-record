@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PHP Service Bus active record implementation
+ * Active record implementation
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
@@ -72,7 +72,10 @@ final class MetadataLoader
             {
                 $cacheKey = \sha1($table . '_metadata_columns');
 
-                /** @var array|null $columns */
+                /**
+                 * @psalm-suppress TooManyTemplateParams Wrong Promise template
+                 * @var array|null $columns
+                 */
                 $columns = yield $this->cacheAdapter->get($cacheKey);
 
                 if(null !== $columns)
@@ -80,9 +83,13 @@ final class MetadataLoader
                     return $columns;
                 }
 
-                /** @var array<string, string>|null $columns */
+                /**
+                 * @psalm-suppress TooManyTemplateParams Wrong Promise template
+                 * @var array<string, string>|null $columns
+                 */
                 $columns = yield from $this->loadColumns($table);
 
+                /** @psalm-suppress TooManyTemplateParams Wrong Promise template */
                 yield $this->cacheAdapter->save($cacheKey, $columns);
 
                 return $columns;
@@ -115,10 +122,16 @@ final class MetadataLoader
 
         $compiledQuery = $queryBuilder->compile();
 
-        /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
+        /**
+         * @psalm-suppress TooManyTemplateParams Wrong Promise template
+         * @var \ServiceBus\Storage\Common\ResultSet $resultSet
+         */
         $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
 
-        /** @var array<int, array<string, string>> $columns */
+        /**
+         * @psalm-suppress TooManyTemplateParams Wrong Promise template
+         * @var array<int, array<string, string>> $columns
+         */
         $columns = yield fetchAll($resultSet);
 
         /** @var array{column_name:string, data_type:string} $columnData */
