@@ -112,7 +112,7 @@ abstract class Table
      */
     final public static function new(QueryExecutor $queryExecutor, array $data): Promise
     {
-        /** @psalm-suppress InvalidArgument Incorrect psalm unpack parameters (...$args) */
+        /** @psalm-suppress InvalidArgument */
         return call(
             function(array $data) use ($queryExecutor): \Generator
             {
@@ -173,7 +173,7 @@ abstract class Table
      */
     final public static function findOneBy(QueryExecutor $queryExecutor, array $criteria): Promise
     {
-        /** @psalm-suppress InvalidArgument Incorrect psalm unpack parameters (...$args) */
+        /** @psalm-suppress InvalidArgument */
         return call(
             static function(QueryExecutor $queryExecutor, array $criteria): \Generator
             {
@@ -221,7 +221,7 @@ abstract class Table
         array $orderBy = []
     ): Promise
     {
-        /** @psalm-suppress InvalidArgument Incorrect psalm unpack parameters (...$args) */
+        /** @psalm-suppress InvalidArgument */
         return call(
             static function(QueryExecutor $queryExecutor, array $criteria, ?int $limit, array $orderBy): \Generator
             {
@@ -274,7 +274,7 @@ abstract class Table
      */
     final public function save(): Promise
     {
-        /** @psalm-suppress InvalidArgument Incorrect psalm unpack parameters (...$args) */
+        /** @psalm-suppress InvalidArgument */
         return call(
             function(bool $isNew): \Generator
             {
@@ -321,7 +321,10 @@ abstract class Table
      */
     public function refresh(): Promise
     {
-        /** @psalm-suppress InvalidArgument Incorrect psalm unpack parameters (...$args) */
+        /**
+         * @psalm-suppress MixedTypeCoercion
+         * @psalm-suppress InvalidArgument
+         */
         return call(
             function(): \Generator
             {

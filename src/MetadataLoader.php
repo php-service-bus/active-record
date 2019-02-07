@@ -66,7 +66,7 @@ final class MetadataLoader
      */
     public function columns(string $table): Promise
     {
-        /** @psalm-suppress InvalidArgument Incorrect psalm unpack parameters (...$args) */
+        /** @psalm-suppress InvalidArgument */
         return call(
             function(string $table): \Generator
             {

@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/php-service-bus/active-record.svg?branch=master)](https://travis-ci.org/php-service-bus/active-record)
-[![Code Coverage](https://scrutinizer-ci.com/g/php-service-bus/active-record/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/php-service-bus/active-record/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/php-service-bus/active-record/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/php-service-bus/active-record/?branch=master)
+[![Build Status](https://travis-ci.org/php-service-bus/active-record.svg?branch=v3.0)](https://travis-ci.org/php-service-bus/active-record)
+[![Code Coverage](https://scrutinizer-ci.com/g/php-service-bus/active-record/badges/coverage.png?b=v3.0)](https://scrutinizer-ci.com/g/php-service-bus/active-record/?branch=v3.0)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/php-service-bus/active-record/badges/quality-score.png?b=v3.0)](https://scrutinizer-ci.com/g/php-service-bus/active-record/?branch=v3.0)
 
 ## What is it?
 

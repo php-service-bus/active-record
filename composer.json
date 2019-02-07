@@ -31,7 +31,7 @@
     "psr-4": {
       "ServiceBus\\Storage\\Common\\Tests\\": "vendor/php-service-bus/storage-common/tests",
       "ServiceBus\\Storage\\Sql\\": "vendor/php-service-bus/storage-sql/tests",
-      "ServiceBus\\Cache\\Tests\\": "vendor/php-service-bus/cachel/tests",
+      "ServiceBus\\Cache\\Tests\\": "vendor/php-service-bus/cache/tests",
       "ServiceBus\\Storage\\ActiveRecord\\Tests\\": "tests/"
     },
     "files": [
@@ -41,13 +41,13 @@
   "require": {
     "php": ">=7.2",
     "ext-pgsql": "*",
-    "php-service-bus/cache": "dev-master",
-    "php-service-bus/storage-sql": "dev-master",
+    "php-service-bus/cache": "^v3.0",
+    "php-service-bus/storage-sql": "^v3.0",
     "ramsey/uuid": "^3.7"
   },
   "require-dev": {
     "phpunit/phpunit": "^7",
-    "vimeo/psalm": "dev-master",
+    "vimeo/psalm": "^v3",
     "doctrine/dbal": "^v2.6"
   },
   "prefer-stable": true,
