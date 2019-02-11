@@ -503,10 +503,11 @@ abstract class Table
          */
         $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
 
-        /** @psalm-suppress TooManyTemplateParams Wrong Promise template */
-        yield $resultSet->advance();
-
-        $insertedEntryId = $resultSet->lastInsertId();
+        /**
+         * @psalm-suppress TooManyTemplateParams Wrong Promise template
+         * @var string $insertedEntryId
+         */
+        $insertedEntryId = yield $resultSet->lastInsertId();
 
         unset($queryBuilder, $compiledQuery, $resultSet);
 
