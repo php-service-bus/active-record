@@ -262,8 +262,6 @@ EOT
 
     /**
      * @test
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Column "qqqq" does not exist in table "test_table"
      *
      * @return void
      *
@@ -271,6 +269,9 @@ EOT
      */
     public function unExistsProperty(): void
     {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Column "qqqq" does not exist in table "test_table"');
+
         wait(TestTable::new($this->adapter, ['qqqq' => '111']));
     }
 
@@ -341,8 +342,6 @@ EOT
 
     /**
      * @test
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Failed to update entity: data has been deleted
      *
      * @return void
      *
@@ -350,6 +349,9 @@ EOT
      */
     public function refreshWithDeletedEntry(): void
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Failed to update entity: data has been deleted');
+
         /** @var TestTable $table */
         $table = wait(TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']));
 
@@ -359,8 +361,6 @@ EOT
 
     /**
      * @test
-     * @expectedException \LogicException
-     * @expectedExceptionMessage In the parameters of the entity must be specified element with the index "id" (primary key)
      *
      * @return void
      *
@@ -368,6 +368,9 @@ EOT
      */
     public function updateWithoutPrimaryKey(): void
     {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('In the parameters of the entity must be specified element with the index "id" (primary key)');
+
         /** @var TestTable $table */
         $table = wait(TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']));
 
