@@ -179,7 +179,7 @@ abstract class Table
             {
                 /**
                  * @var array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
-                 * @var \ServiceBus\Storage\Common\ResultSet                $resultSet
+                 * @var \ServiceBus\Storage\Common\ResultSet                   $resultSet
                  */
                 $resultSet = yield from find($queryExecutor, static::tableName(), $criteria);
 
@@ -227,7 +227,7 @@ abstract class Table
             {
                 /**
                  * @var array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
-                 * @var \ServiceBus\Storage\Common\ResultSet                $resultSet
+                 * @var \ServiceBus\Storage\Common\ResultSet                   $resultSet
                  * @var array<string, string>                                  $orderBy
                  */
                 $resultSet = yield from find($queryExecutor, static::tableName(), $criteria, $limit, $orderBy);
@@ -265,7 +265,8 @@ abstract class Table
      * @noinspection PhpDocRedundantThrowsInspection
      * @psalm-return \Amp\Promise
      *
-     * @return Promise<string|int> Returns the ID of the saved entry, or the number of affected rows (in the case of an update)
+     * @return Promise<string|int> Returns the ID of the saved entry, or the number of affected rows (in the case of an
+     *                             update)
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
@@ -315,7 +316,8 @@ abstract class Table
      *
      * @return Promise
      *
-     * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UpdateRemovedEntry Unable to find an entry (possibly RC occured)
+     * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UpdateRemovedEntry Unable to find an entry (possibly RC
+     *                                                                        occured)
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      */
@@ -522,7 +524,9 @@ abstract class Table
     /**
      * Update exists entry
      *
+     * @psalm-param array<string, string|int|float|null> $changeSet
      * @psalm-return \Generator
+     *
      *
      * @param array $changeSet
      *
