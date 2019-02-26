@@ -36,13 +36,16 @@ function uuid(): string
 /**
  * @internal
  *
+ * @psalm-param array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
+ * @psalm-param array<string, string>                                  $orderBy
+ *
  * @psalm-return \Generator
  *
- * @param QueryExecutor                                          $queryExecutor
- * @param string                                                 $tableName
- * @param array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
- * @param int|null                                               $limit
- * @param array<string, string>                                  $orderBy
+ * @param QueryExecutor                              $queryExecutor
+ * @param string                                     $tableName
+ * @param \Latitude\QueryBuilder\CriteriaInterface[] $criteria
+ * @param int|null                                   $limit
+ * @param array                                      $orderBy
  *
  * @return \Generator<\ServiceBus\Storage\Common\ResultSet>
  *
@@ -54,8 +57,9 @@ function uuid(): string
 function find(QueryExecutor $queryExecutor, string $tableName, array $criteria = [], ?int $limit = null, array $orderBy = []): \Generator
 {
     /**
-     * @var string                               $query
-     * @var array<string, string|int|float|null> $parameters
+     * @var string $query
+     * @var array  $parameters
+     * @psalm-var array<string, string|int|float|null> $parameters
      */
     [$query, $parameters] = buildQuery(selectQuery($tableName), $criteria, $orderBy, $limit);
 
@@ -66,11 +70,13 @@ function find(QueryExecutor $queryExecutor, string $tableName, array $criteria =
 /**
  * @internal
  *
+ * @psalm-param array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
+ *
  * @psalm-return \Generator
  *
- * @param QueryExecutor                                          $queryExecutor
- * @param string                                                 $tableName
- * @param array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
+ * @param QueryExecutor                              $queryExecutor
+ * @param string                                     $tableName
+ * @param \Latitude\QueryBuilder\CriteriaInterface[] $criteria
  *
  * @return \Generator<int>
  *
@@ -83,8 +89,9 @@ function find(QueryExecutor $queryExecutor, string $tableName, array $criteria =
 function remove(QueryExecutor $queryExecutor, string $tableName, array $criteria = []): \Generator
 {
     /**
-     * @var string                               $query
-     * @var array<string, string|int|float|null> $parameters
+     * @var string $query
+     * @var array  $parameters
+     * @psalm-var array<string, string|int|float|null> $parameters
      */
     [$query, $parameters] = buildQuery(deleteQuery($tableName), $criteria);
 
@@ -104,10 +111,13 @@ function remove(QueryExecutor $queryExecutor, string $tableName, array $criteria
 /**
  * @internal
  *
- * @param LatitudeQuery\AbstractQuery                            $queryBuilder
- * @param array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
- * @param array<string, string>                                  $orderBy
- * @param int|null                                               $limit
+ * @psalm-param array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
+ * @psalm-param array<string, string>                                  $orderBy
+ *
+ * @param LatitudeQuery\AbstractQuery                $queryBuilder
+ * @param \Latitude\QueryBuilder\CriteriaInterface[] $criteria
+ * @param array                                      $orderBy
+ * @param int|null                                   $limit
  *
  * @return array 0 - SQL query; 1 - query parameters
  */
@@ -154,12 +164,15 @@ function buildQuery(
 /**
  * @internal
  *
+ * @psalm-param  array<string, string|int|null|float> $set
+ * @psalm-return array<string, string|int|null|float>
+ *
  * Unescape binary data
  *
- * @param QueryExecutor                        $queryExecutor
- * @param array<string, string|int|null|float> $set
+ * @param QueryExecutor $queryExecutor
+ * @param array         $set
  *
- * @return array<string, string|int|null|float>
+ * @return array
  */
 function unescapeBinary(QueryExecutor $queryExecutor, array $set): array
 {

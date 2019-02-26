@@ -55,6 +55,7 @@ final class MetadataLoader
      * ]
      *
      * @noinspection PhpDocRedundantThrowsInspection
+     *
      * @psalm-return \Amp\Promise
      *
      * @param string $table
@@ -130,11 +131,12 @@ final class MetadataLoader
 
         /**
          * @psalm-suppress TooManyTemplateParams Wrong Promise template
-         * @var array<int, array<string, string>> $columns
+         * @psalm-var      array<int, array<string, string>> $columns
+         * @var array $columns
          */
         $columns = yield fetchAll($resultSet);
 
-        /** @var array{column_name:string, data_type:string} $columnData */
+        /** @psalm-var array{column_name:string, data_type:string} $columnData */
         foreach($columns as $columnData)
         {
             $result[$columnData['column_name']] = $columnData['data_type'];

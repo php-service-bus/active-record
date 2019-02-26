@@ -48,7 +48,8 @@ abstract class Table
     /**
      * Data collection
      *
-     * @var array<string, string|int|float|null>
+     * @psalm-var array<string, string|int|float|null>
+     * @var array
      */
     private $data = [];
 
@@ -62,7 +63,8 @@ abstract class Table
     /**
      * Data change list
      *
-     * @var array<string, string|int|float|null>
+     * @psalm-var array<string, string|int|float|null>
+     * @var array
      */
     private $changes = [];
 
@@ -74,7 +76,8 @@ abstract class Table
      *   'title' => 'varchar'
      * ]
      *
-     * @var array<string, string>
+     * @psalm-var array<string, string>
+     * @var array
      */
     private $columns = [];
 
@@ -117,8 +120,8 @@ abstract class Table
             function(array $data) use ($queryExecutor): \Generator
             {
                 /**
-                 * @var array<string, string|int|float|null> $data
-                 * @var static                               $self
+                 * @psalm-var array<string, string|int|float|null> $data
+                 * @var static $self
                  */
 
                 $self = yield from static::create($queryExecutor, $data, true);
@@ -178,12 +181,16 @@ abstract class Table
             static function(QueryExecutor $queryExecutor, array $criteria): \Generator
             {
                 /**
-                 * @var array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
-                 * @var \ServiceBus\Storage\Common\ResultSet                   $resultSet
+                 * @psalm-var array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
+                 * @var \Latitude\QueryBuilder\CriteriaInterface[] $criteria
+                 * @var \ServiceBus\Storage\Common\ResultSet       $resultSet
                  */
                 $resultSet = yield from find($queryExecutor, static::tableName(), $criteria);
 
-                /** @var array<string, string|int|float|null>|null $data */
+                /**
+                 * @psalm-var array<string, string|int|float|null>|null $data
+                 * @var array $data
+                 */
                 $data = yield fetchOne($resultSet);
 
                 unset($resultSet);
@@ -201,12 +208,15 @@ abstract class Table
      * Find entries by specified criteria
      *
      * @noinspection PhpDocRedundantThrowsInspection
+     *
+     * @psalm-param  array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
+     * @psalm-param  array<string, string>                      $orderBy
      * @psalm-return \Amp\Promise
      *
-     * @param QueryExecutor                                          $queryExecutor
-     * @param array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
-     * @param int|null                                               $limit
-     * @param array<string, string>                                  $orderBy
+     * @param QueryExecutor                              $queryExecutor
+     * @param \Latitude\QueryBuilder\CriteriaInterface[] $criteria
+     * @param int|null                                   $limit
+     * @param array                                      $orderBy
      *
      * @return Promise<array<int, static>>
      *
@@ -226,9 +236,10 @@ abstract class Table
             static function(QueryExecutor $queryExecutor, array $criteria, ?int $limit, array $orderBy): \Generator
             {
                 /**
-                 * @var array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
-                 * @var \ServiceBus\Storage\Common\ResultSet                   $resultSet
-                 * @var array<string, string>                                  $orderBy
+                 * @psalm-var array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
+                 * @var \Latitude\QueryBuilder\CriteriaInterface[] $criteria
+                 * @var \ServiceBus\Storage\Common\ResultSet       $resultSet
+                 * @var array<string, string>                      $orderBy
                  */
                 $resultSet = yield from find($queryExecutor, static::tableName(), $criteria, $limit, $orderBy);
 
@@ -242,7 +253,7 @@ abstract class Table
 
                 if(null !== $rows)
                 {
-                    /** @var array<string, string|int|float|null> $row */
+                    /** @psalm-var array<string, string|int|float|null> $row */
                     foreach($rows as $row)
                     {
                         /** @var static $entry */
@@ -337,7 +348,10 @@ abstract class Table
                     [equalsCriteria(static::primaryKey(), $this->searchPrimaryKeyValue())]
                 );
 
-                /** @var array<string, string|int|float|null>|null $row */
+                /**
+                 * @psalm-var array<string, string|int|float|null>|null $row
+                 * @var array $row
+                 */
                 $row = yield fetchOne($resultSet);
 
                 unset($resultSet);
@@ -463,9 +477,10 @@ abstract class Table
     /**
      * Store new entry
      *
+     * @psalm-param array<string, string|int|float|null> $changeSet
      * @psalm-return \Generator
      *
-     * @param array<string, string|int|float|null> $changeSet
+     * @param array $changeSet
      *
      * @return \Generator<string|int>
      *
@@ -527,7 +542,6 @@ abstract class Table
      * @psalm-param array<string, string|int|float|null> $changeSet
      * @psalm-return \Generator
      *
-     *
      * @param array $changeSet
      *
      * @return \Generator<int>
@@ -543,8 +557,9 @@ abstract class Table
     private function updateExistsEntry(array $changeSet): \Generator
     {
         /**
-         * @var string                               $query
-         * @var array<string, string|int|float|null> $parameters
+         * @var string $query
+         * @var array  $parameters
+         * @psalm-var array<string, string|int|float|null> $parameters
          */
         [$query, $parameters] = buildQuery(
             updateQuery(static::tableName(), $changeSet),
@@ -585,11 +600,12 @@ abstract class Table
     /**
      * Create entry
      *
+     * @psalm-param array<string, string|int|float|null> $data
      * @psalm-return \Generator
      *
-     * @param QueryExecutor                        $queryExecutor
-     * @param array<string, string|int|float|null> $data
-     * @param bool                                 $isNew
+     * @param QueryExecutor $queryExecutor
+     * @param array         $data
+     * @param bool          $isNew
      *
      * @return \Generator<static>
      *
@@ -602,7 +618,7 @@ abstract class Table
 
         $self = new static($queryExecutor);
 
-        /** @var array<string, string> $columns */
+        /** @psalm-var array<string, string> $columns */
         $columns = yield $metadataExtractor->columns(static::tableName());
 
         $self->columns = $columns;

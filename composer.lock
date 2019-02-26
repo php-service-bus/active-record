@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "17194b06d2d6dc512232b85fe7c6961f",
-    "content-hash": "df204da346537f861d646be5eabd029f",
+    "hash": "271ca54663f7f5b278ee0d1eb991a00e",
+    "content-hash": "0c8bd4b5bba6b6d63f362619b0084e3b",
     "packages": [
         {
             "name": "amphp/amp",
@@ -371,16 +371,16 @@
         },
         {
             "name": "php-service-bus/cache",
-            "version": "v3.0.2",
+            "version": "v3.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-service-bus/cache.git",
-                "reference": "096b29f5be170ee87bafc38a43c6faece0bedaaa"
+                "reference": "2f561444d271b51a505743ceaa313b4a29329c78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-service-bus/cache/zipball/096b29f5be170ee87bafc38a43c6faece0bedaaa",
-                "reference": "096b29f5be170ee87bafc38a43c6faece0bedaaa",
+                "url": "https://api.github.com/repos/php-service-bus/cache/zipball/2f561444d271b51a505743ceaa313b4a29329c78",
+                "reference": "2f561444d271b51a505743ceaa313b4a29329c78",
                 "shasum": ""
             },
             "require": {
@@ -415,7 +415,7 @@
                 "command-bus",
                 "messaging"
             ],
-            "time": "2019-02-15 09:38:18"
+            "time": "2019-02-26 08:33:33"
         },
         {
             "name": "php-service-bus/storage-common",
@@ -467,16 +467,16 @@
         },
         {
             "name": "php-service-bus/storage-sql",
-            "version": "v3.0.3",
+            "version": "v3.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-service-bus/storage-sql.git",
-                "reference": "3c8427b1589b1e05ff4a75727807ba6338a6a602"
+                "reference": "7235ea9406988955f30ac406657412adf3af5e0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-service-bus/storage-sql/zipball/3c8427b1589b1e05ff4a75727807ba6338a6a602",
-                "reference": "3c8427b1589b1e05ff4a75727807ba6338a6a602",
+                "url": "https://api.github.com/repos/php-service-bus/storage-sql/zipball/7235ea9406988955f30ac406657412adf3af5e0c",
+                "reference": "7235ea9406988955f30ac406657412adf3af5e0c",
                 "shasum": ""
             },
             "require": {
@@ -523,7 +523,7 @@
                 "postgresql",
                 "sql"
             ],
-            "time": "2019-02-20 16:19:51"
+            "time": "2019-02-22 08:02:49"
         },
         {
             "name": "psr/log",
@@ -1806,16 +1806,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "7.0.2",
+            "version": "7.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "cfca9c5f7f2694ca0c7749ffb142927d9f05250f"
+                "reference": "0317a769a81845c390e19684d9ba25d7f6aa4707"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/cfca9c5f7f2694ca0c7749ffb142927d9f05250f",
-                "reference": "cfca9c5f7f2694ca0c7749ffb142927d9f05250f",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/0317a769a81845c390e19684d9ba25d7f6aa4707",
+                "reference": "0317a769a81845c390e19684d9ba25d7f6aa4707",
                 "shasum": ""
             },
             "require": {
@@ -1865,7 +1865,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-02-15 13:40:27"
+            "time": "2019-02-26 07:38:26"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3171,7 +3171,10 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "php-service-bus/cache": 20,
+        "php-service-bus/storage-sql": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
