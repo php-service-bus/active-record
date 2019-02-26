@@ -41,8 +41,8 @@
   "require": {
     "php": ">=7.2",
     "ext-pgsql": "*",
-    "php-service-bus/cache": "v3.0.x-dev",
-    "php-service-bus/storage-sql": "v3.0.x-dev",
+    "php-service-bus/cache": "v3.0.7",
+    "php-service-bus/storage-sql": "v3.0.7",
     "ramsey/uuid": "^3.7"
   },
   "require-dev": {
