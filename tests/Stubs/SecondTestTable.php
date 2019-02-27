@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Active record implementation
+ * Active record implementation.
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
@@ -21,7 +21,7 @@ use ServiceBus\Storage\ActiveRecord\Table;
 final class SecondTestTable extends Table
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected static function tableName(): string
     {
@@ -29,7 +29,7 @@ final class SecondTestTable extends Table
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected static function primaryKey(): string
     {

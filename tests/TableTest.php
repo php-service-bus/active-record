@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Active record implementation
+ * Active record implementation.
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
@@ -12,15 +12,15 @@ declare(strict_types = 1);
 
 namespace ServiceBus\Storage\ActiveRecord\Tests;
 
-use Amp\Promise;
 use function Amp\Promise\wait;
+use function ServiceBus\Storage\ActiveRecord\uuid;
+use function ServiceBus\Storage\Sql\AmpPosgreSQL\postgreSqlAdapterFactory;
+use Amp\Promise;
 use PHPUnit\Framework\TestCase;
 use ServiceBus\Cache\InMemory\InMemoryStorage;
 use ServiceBus\Storage\ActiveRecord\Tests\Stubs\SecondTestTable;
 use ServiceBus\Storage\ActiveRecord\Tests\Stubs\TestTable;
-use function ServiceBus\Storage\ActiveRecord\uuid;
 use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
-use function ServiceBus\Storage\Sql\AmpPosgreSQL\postgreSqlAdapterFactory;
 
 /**
  *
@@ -33,7 +33,7 @@ final class TableTest extends TestCase
     private $adapter;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @throws \Throwable
      */
@@ -45,7 +45,8 @@ final class TableTest extends TestCase
 
         $this->adapter = postgreSqlAdapterFactory((string) \getenv('TEST_POSTGRES_DSN'));
 
-        $promise = $this->adapter->execute(<<<EOT
+        $promise = $this->adapter->execute(
+            <<<EOT
 CREATE TABLE IF NOT EXISTS test_table 
 (
     id uuid PRIMARY KEY,
@@ -57,7 +58,8 @@ EOT
 
         wait($promise);
 
-        $promise = $this->adapter->execute(<<<EOT
+        $promise = $this->adapter->execute(
+            <<<EOT
         CREATE TABLE IF NOT EXISTS second_test_table
 (
 	pk serial constraint second_test_table_pk PRIMARY KEY,
@@ -70,7 +72,7 @@ EOT
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @throws \Throwable
      */
@@ -88,9 +90,9 @@ EOT
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function findNonExistent(): void
     {
@@ -102,9 +104,9 @@ EOT
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function storeNew(): void
     {
@@ -120,23 +122,22 @@ EOT
 
         $id = $testTable->lastInsertId();
 
-        static::assertEquals($expectedId, $id);
+        static::assertSame($expectedId, $id);
 
         /** @var TestTable $testTable */
         $testTable = wait(TestTable::find($this->adapter, $id));
 
         static::assertNotNull($testTable);
-        static::assertEquals('first', $testTable->first_value);
-        static::assertEquals('second', $testTable->second_value);
+        static::assertSame('first', $testTable->first_value);
+        static::assertSame('second', $testTable->second_value);
     }
-
 
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function updateStored(): void
     {
@@ -155,15 +156,15 @@ EOT
 
         $testTable = wait(TestTable::find($this->adapter, $id));
 
-        static::assertEquals('qwerty', $testTable->first_value);
+        static::assertSame('qwerty', $testTable->first_value);
     }
 
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function deleteUnStored(): void
     {
@@ -176,9 +177,9 @@ EOT
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function updateWithNoChanges(): void
     {
@@ -188,16 +189,16 @@ EOT
 
         wait($testTable->save());
 
-        static::assertEquals($id, $testTable->lastInsertId());
-        static::assertEquals(0, wait($testTable->save()));
+        static::assertSame($id, $testTable->lastInsertId());
+        static::assertSame(0, wait($testTable->save()));
     }
 
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function findCollection(): void
     {
@@ -208,11 +209,11 @@ EOT
             TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '4', 'second_value' => '4']),
             TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '5', 'second_value' => '3']),
             TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '6', 'second_value' => '2']),
-            TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '7', 'second_value' => '1'])
+            TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '7', 'second_value' => '1']),
         ];
 
         /** @var Promise $promise */
-        foreach($collection as $promise)
+        foreach ($collection as $promise)
         {
             /** @var TestTable $entity */
             $entity = wait($promise);
@@ -229,9 +230,9 @@ EOT
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function successRemove(): void
     {
@@ -249,9 +250,9 @@ EOT
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function saveWithNoPrimaryKey(): void
     {
@@ -263,9 +264,9 @@ EOT
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function unExistsProperty(): void
     {
@@ -278,9 +279,9 @@ EOT
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function saveWithSerialPrimaryKey(): void
     {
@@ -297,15 +298,15 @@ EOT
         /** @var SecondTestTable $table */
         $table = \reset($tables);
 
-        static::assertEquals('root', $table->title);
+        static::assertSame('root', $table->title);
     }
 
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function refresh(): void
     {
@@ -318,15 +319,15 @@ EOT
 
         wait($table->refresh());
 
-        static::assertEquals('root', $table->title);
+        static::assertSame('root', $table->title);
     }
 
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function selectWithOrder(): void
     {
@@ -343,9 +344,9 @@ EOT
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function refreshWithDeletedEntry(): void
     {
@@ -362,9 +363,9 @@ EOT
     /**
      * @test
      *
-     * @return void
-     *
      * @throws \Throwable
+     *
+     * @return void
      */
     public function updateWithoutPrimaryKey(): void
     {

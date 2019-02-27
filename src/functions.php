@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Active record implementation
+ * Active record implementation.
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
@@ -12,15 +12,16 @@ declare(strict_types = 1);
 
 namespace ServiceBus\Storage\ActiveRecord;
 
+use function ServiceBus\Storage\Sql\deleteQuery;
+use function ServiceBus\Storage\Sql\selectQuery;
 use Latitude\QueryBuilder\Query as LatitudeQuery;
 use Ramsey\Uuid\Uuid;
 use ServiceBus\Storage\Common\BinaryDataDecoder;
 use ServiceBus\Storage\Common\QueryExecutor;
-use function ServiceBus\Storage\Sql\deleteQuery;
-use function ServiceBus\Storage\Sql\selectQuery;
 
 /**
  * @noinspection PhpDocMissingThrowsInspection
+ *
  * @internal
  *
  * Generate a version 4 (random) UUID.
@@ -47,12 +48,12 @@ function uuid(): string
  * @param int|null                                   $limit
  * @param array                                      $orderBy
  *
- * @return \Generator<\ServiceBus\Storage\Common\ResultSet>
- *
  * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
  * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
  * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
  * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
+ *
+ * @return \Generator<\ServiceBus\Storage\Common\ResultSet>
  */
 function find(QueryExecutor $queryExecutor, string $tableName, array $criteria = [], ?int $limit = null, array $orderBy = []): \Generator
 {
@@ -63,7 +64,10 @@ function find(QueryExecutor $queryExecutor, string $tableName, array $criteria =
      */
     [$query, $parameters] = buildQuery(selectQuery($tableName), $criteria, $orderBy, $limit);
 
-    /** @psalm-suppress TooManyTemplateParams Wrong Promise template */
+    /**
+     * @psalm-suppress TooManyTemplateParams Wrong Promise template
+     * @psalm-suppress MixedTypeCoercion Invalid params() docblock
+     */
     return yield $queryExecutor->execute($query, $parameters);
 }
 
@@ -78,13 +82,13 @@ function find(QueryExecutor $queryExecutor, string $tableName, array $criteria =
  * @param string                                     $tableName
  * @param \Latitude\QueryBuilder\CriteriaInterface[] $criteria
  *
- * @return \Generator<int>
- *
  * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
  * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
  * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
  * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
  * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
+ *
+ * @return \Generator<int>
  */
 function remove(QueryExecutor $queryExecutor, string $tableName, array $criteria = []): \Generator
 {
@@ -97,6 +101,8 @@ function remove(QueryExecutor $queryExecutor, string $tableName, array $criteria
 
     /**
      * @psalm-suppress TooManyTemplateParams Wrong Promise template
+     * @psalm-suppress MixedTypeCoercion Invalid params() docblock
+     *
      * @var \ServiceBus\Storage\Common\ResultSet $resultSet
      */
     $resultSet = yield $queryExecutor->execute($query, $parameters);
@@ -126,28 +132,26 @@ function buildQuery(
     array $criteria = [],
     array $orderBy = [],
     ?int $limit = null
-): array
-{
-    /** @var LatitudeQuery\SelectQuery|LatitudeQuery\UpdateQuery|LatitudeQuery\DeleteQuery $queryBuilder */
-
+): array {
+    /** @var LatitudeQuery\DeleteQuery|LatitudeQuery\SelectQuery|LatitudeQuery\UpdateQuery $queryBuilder */
     $isFirstCondition = true;
 
     /** @var \Latitude\QueryBuilder\CriteriaInterface $criteriaItem */
-    foreach($criteria as $criteriaItem)
+    foreach ($criteria as $criteriaItem)
     {
         $methodName = true === $isFirstCondition ? 'where' : 'andWhere';
         $queryBuilder->{$methodName}($criteriaItem);
         $isFirstCondition = false;
     }
 
-    if($queryBuilder instanceof LatitudeQuery\SelectQuery)
+    if ($queryBuilder instanceof LatitudeQuery\SelectQuery)
     {
-        foreach($orderBy as $column => $direction)
+        foreach ($orderBy as $column => $direction)
         {
             $queryBuilder->orderBy($column, $direction);
         }
 
-        if(null !== $limit)
+        if (null !== $limit)
         {
             $queryBuilder->limit($limit);
         }
@@ -157,7 +161,7 @@ function buildQuery(
 
     return [
         $compiledQuery->sql(),
-        $compiledQuery->params()
+        $compiledQuery->params(),
     ];
 }
 
@@ -176,11 +180,11 @@ function buildQuery(
  */
 function unescapeBinary(QueryExecutor $queryExecutor, array $set): array
 {
-    if($queryExecutor instanceof BinaryDataDecoder)
+    if ($queryExecutor instanceof BinaryDataDecoder)
     {
-        foreach($set as $key => $value)
+        foreach ($set as $key => $value)
         {
-            if(false === empty($value) && true === \is_string($value))
+            if (false === empty($value) && true === \is_string($value))
             {
                 $set[$key] = $queryExecutor->unescapeBinary($value);
             }

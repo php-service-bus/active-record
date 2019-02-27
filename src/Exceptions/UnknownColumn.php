@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Active record implementation
+ * Active record implementation.
  *
  * @author  Maksim Masiukevich <dev@async-php.com>
  * @license MIT
@@ -26,7 +26,8 @@ final class UnknownColumn extends \InvalidArgumentException
         parent::__construct(
             \sprintf(
                 'Column "%s" does not exist in table "%s"',
-                $column, $table
+                $column,
+                $table
             )
         );
     }
