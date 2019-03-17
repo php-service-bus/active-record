@@ -115,7 +115,6 @@ final class MetadataLoader
      * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
      *
      * @return \Generator<array<string, string>>
-     *
      */
     private function loadColumns(string $table): \Generator
     {

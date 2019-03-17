@@ -115,7 +115,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      *
      * @return Promise<\ServiceBus\Storage\ActiveRecord\Table>
-     *
      */
     final public static function new(QueryExecutor $queryExecutor, array $data): Promise
     {
@@ -156,7 +155,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      *
      * @return Promise<static|null>
-     *
      */
     final public static function find(QueryExecutor $queryExecutor, $id): Promise
     {
@@ -178,7 +176,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\OneResultExpected The result must contain only 1 row
      *
      * @return Promise<static|null>
-     *
      */
     final public static function findOneBy(QueryExecutor $queryExecutor, array $criteria): Promise
     {
@@ -232,7 +229,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed Error getting operation  result
      *
      * @return Promise<array<int, static>>
-     *
      */
     final public static function findBy(
         QueryExecutor $queryExecutor,
@@ -296,7 +292,6 @@ abstract class Table
      *
      * @return Promise<int|string> Returns the ID of the saved entry, or the number of affected rows (in the case of an
      *                             update)
-     *
      */
     final public function save(): Promise
     {
@@ -345,7 +340,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      *
      * @return Promise
-     *
      */
     public function refresh(): Promise
     {
@@ -397,7 +391,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
      *
      * @return Promise Does not return result
-     *
      */
     final public function remove(): Promise
     {
@@ -447,7 +440,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UnknownColumn
      *
      * @return void
-     *
      */
     final public function __set(string $name, $value): void
     {
@@ -508,7 +500,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      *
      * @return \Generator<int|string>
-     *
      */
     private function storeNewEntry(array $changeSet): \Generator
     {
@@ -576,7 +567,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      *
      * @return \Generator<int>
-     *
      */
     private function updateExistsEntry(array $changeSet): \Generator
     {
@@ -638,7 +628,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      *
      * @return \Generator<static>
-     *
      */
     private static function create(QueryExecutor $queryExecutor, array $data, bool $isNew): \Generator
     {
