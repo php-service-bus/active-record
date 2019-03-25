@@ -41,8 +41,8 @@
   "require": {
     "php": ">=7.2",
     "ext-pgsql": "*",
-    "php-service-bus/cache": "^v3.0",
-    "php-service-bus/storage-sql": "^v3.1",
+    "php-service-bus/cache": "^v3.2",
+    "php-service-bus/storage-sql": "^v3.2",
     "ramsey/uuid": "^3.7"
   },
   "require-dev": {
@@ -52,7 +52,7 @@
     "doctrine/dbal": "^v2.6"
   },
   "prefer-stable": true,
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "scripts": {
     "psalm": "./vendor/bin/psalm --config=psalm.xml",
     "tests": "./vendor/bin/phpunit --configuration phpunit.xml --verbose",
