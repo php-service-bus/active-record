@@ -13,12 +13,15 @@ declare(strict_types = 1);
 namespace ServiceBus\Storage\ActiveRecord;
 
 use function Amp\call;
+use function ServiceBus\Storage\Sql\buildQuery;
 use function ServiceBus\Storage\Sql\equalsCriteria;
 use function ServiceBus\Storage\Sql\fetchAll;
 use function ServiceBus\Storage\Sql\fetchOne;
+use function ServiceBus\Storage\Sql\find;
 use function ServiceBus\Storage\Sql\insertQuery;
+use function ServiceBus\Storage\Sql\remove;
+use function ServiceBus\Storage\Sql\unescapeBinary;
 use function ServiceBus\Storage\Sql\updateQuery;
-use Amp\Coroutine;
 use Amp\Promise;
 use Amp\Success;
 use ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified;
@@ -120,7 +123,7 @@ abstract class Table
     {
         /** @psalm-suppress InvalidArgument */
         return call(
-            function(array $data) use ($queryExecutor): \Generator
+            static function(array $data) use ($queryExecutor): \Generator
             {
                 /**
                  * @psalm-var array<string, string|int|float|null> $data
@@ -189,7 +192,7 @@ abstract class Table
                  * @var \Latitude\QueryBuilder\CriteriaInterface[] $criteria
                  * @var \ServiceBus\Storage\Common\ResultSet       $resultSet
                  */
-                $resultSet = yield from find($queryExecutor, static::tableName(), $criteria);
+                $resultSet = yield find($queryExecutor, static::tableName(), $criteria);
 
                 /**
                  * @psalm-var array<string, string|int|float|null>|null $data
@@ -247,7 +250,7 @@ abstract class Table
                  * @var \ServiceBus\Storage\Common\ResultSet       $resultSet
                  * @var array<string, string>                      $orderBy
                  */
-                $resultSet = yield from find($queryExecutor, static::tableName(), $criteria, $limit, $orderBy);
+                $resultSet = yield find($queryExecutor, static::tableName(), $criteria, $limit, $orderBy);
 
                 /** @var array<string, float|int|string|null>|null $rows */
                 $rows = yield fetchAll($resultSet);
@@ -351,7 +354,7 @@ abstract class Table
             function(): \Generator
             {
                 /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
-                $resultSet = yield from find(
+                $resultSet = yield find(
                     $this->queryExecutor,
                     static::tableName(),
                     [equalsCriteria(static::primaryKey(), $this->searchPrimaryKeyValue())]
@@ -369,7 +372,9 @@ abstract class Table
                 if (true === \is_array($row))
                 {
                     $this->changes = [];
-                    $this->data    = unescapeBinary($this->queryExecutor, $row);
+
+                    /** @psalm-suppress PossiblyInvalidPropertyAssignmentValue */
+                    $this->data = unescapeBinary($this->queryExecutor, $row);
 
                     return;
                 }
@@ -399,12 +404,10 @@ abstract class Table
             return new Success();
         }
 
-        return new Coroutine(
-            remove(
-                $this->queryExecutor,
-                static::tableName(),
-                [equalsCriteria(static::primaryKey(), $this->searchPrimaryKeyValue())]
-            )
+        return remove(
+            $this->queryExecutor,
+            static::tableName(),
+            [equalsCriteria(static::primaryKey(), $this->searchPrimaryKeyValue())]
         );
     }
 
@@ -642,6 +645,13 @@ abstract class Table
 
         if (false === $isNew)
         {
+            /**
+             * @noinspection CallableParameterUseCaseInTypeContextInspection
+             *
+             * @psalm-var    array<string, string|int|float|null> $data
+             *
+             * @var array $data
+             */
             $data = unescapeBinary($queryExecutor, $data);
         }
 
