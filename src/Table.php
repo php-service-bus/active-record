@@ -262,7 +262,11 @@ abstract class Table
 
                 if (null !== $rows)
                 {
-                    /** @psalm-var array<string, string|int|float|null> $row */
+                    /**
+                     * @psalm-var array<string, string|int|float|null> $row
+                     *
+                     * @var array $row
+                     */
                     foreach ($rows as $row)
                     {
                         /** @var static $entry */
@@ -373,8 +377,14 @@ abstract class Table
                 {
                     $this->changes = [];
 
-                    /** @psalm-suppress PossiblyInvalidPropertyAssignmentValue */
-                    $this->data = unescapeBinary($this->queryExecutor, $row);
+                    /**
+                     * @psalm-suppress PossiblyInvalidPropertyAssignmentValue
+                     *
+                     * @var array $parameters
+                     */
+                    $parameters = unescapeBinary($this->queryExecutor, $row);
+
+                    $this->data = $parameters;
 
                     return;
                 }
