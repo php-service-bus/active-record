@@ -39,17 +39,17 @@
     ]
   },
   "require": {
-    "php": ">=7.2",
+    "php": ">=7.3",
     "ext-pgsql": "*",
-    "php-service-bus/cache": "^v3.2",
-    "php-service-bus/storage-sql": "^v3.2",
+    "php-service-bus/cache": "v3.3.*",
+    "php-service-bus/storage-sql": "v3.3.*",
     "ramsey/uuid": "^3.7"
   },
   "require-dev": {
     "php-service-bus/code-style-config": "^v0.1",
     "phpunit/phpunit": "^8",
     "vimeo/psalm": "^v3",
-    "phpstan/phpstan": "^0.11.5",
+    "phpstan/phpstan": "0.11.*",
     "doctrine/dbal": "^v2.6"
   },
   "prefer-stable": true,
