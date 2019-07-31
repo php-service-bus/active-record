@@ -539,18 +539,13 @@ abstract class Table
         $compiledQuery = $queryBuilder->compile();
 
         /**
-         * @psalm-suppress TooManyTemplateParams Wrong Promise template
          * @psalm-suppress MixedTypeCoercion Invalid params() docblock
          *
          * @var \ServiceBus\Storage\Common\ResultSet $resultSet
          */
         $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
 
-        /**
-         * @psalm-suppress TooManyTemplateParams Wrong Promise template
-         *
-         * @var string $insertedEntryId
-         */
+        /** @var string $insertedEntryId  */
         $insertedEntryId = yield $resultSet->lastInsertId();
 
         unset($queryBuilder, $compiledQuery, $resultSet);
@@ -594,7 +589,6 @@ abstract class Table
         );
 
         /**
-         * @psalm-suppress TooManyTemplateParams Wrong Promise template
          * @psalm-suppress MixedTypeCoercion Invalid params() docblock
          *
          * @var \ServiceBus\Storage\Common\ResultSet $resultSet

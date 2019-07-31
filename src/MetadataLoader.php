@@ -73,11 +73,7 @@ final class MetadataLoader
             {
                 $cacheKey = \sha1($table . '_metadata_columns');
 
-                /**
-                 * @psalm-suppress TooManyTemplateParams Wrong Promise template
-                 *
-                 * @var array|null $columns
-                 */
+                /** @var array|null $columns */
                 $columns = yield $this->cacheAdapter->get($cacheKey);
 
                 if (null !== $columns)
@@ -86,14 +82,12 @@ final class MetadataLoader
                 }
 
                 /**
-                 * @psalm-suppress TooManyTemplateParams Wrong Promise template
                  * @psalm-var      array<string, string>|null $columns
                  *
                  * @var array|null $columns
                  */
                 $columns = yield from $this->loadColumns($table);
 
-                /** @psalm-suppress TooManyTemplateParams Wrong Promise template */
                 yield $this->cacheAdapter->save($cacheKey, $columns);
 
                 return $columns;
@@ -127,7 +121,6 @@ final class MetadataLoader
         $compiledQuery = $queryBuilder->compile();
 
         /**
-         * @psalm-suppress TooManyTemplateParams Wrong Promise template
          * @psalm-suppress MixedTypeCoercion Invalid params() docblock
          *
          * @var \ServiceBus\Storage\Common\ResultSet $resultSet
@@ -135,7 +128,6 @@ final class MetadataLoader
         $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
 
         /**
-         * @psalm-suppress TooManyTemplateParams Wrong Promise template
          * @psalm-var      array<int, array<string, string>> $columns
          *
          * @var array $columns
