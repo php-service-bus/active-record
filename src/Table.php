@@ -48,7 +48,9 @@ abstract class Table
      *
      * @psalm-var array<string, string|int|float|null>
      */
-    private array $data = [];
+    private array
+
+ $data = [];
 
     /**
      * New record flag.
@@ -60,7 +62,9 @@ abstract class Table
      *
      * @psalm-var array<string, string|int|float|null>
      */
-    private array $changes = [];
+    private array
+
+ $changes = [];
 
     /**
      * Columns info.
@@ -72,7 +76,9 @@ abstract class Table
      *
      * @psalm-var array<string, string>
      */
-    private array $columns = [];
+    private array
+
+ $columns = [];
 
     /**
      * Receive associated table name.
@@ -173,7 +179,7 @@ abstract class Table
 
                 unset($resultSet);
 
-                if(true === \is_array($data))
+                if (true === \is_array($data))
                 {
                     return yield from self::create($queryExecutor, $data, false);
                 }
@@ -203,8 +209,7 @@ abstract class Table
         array $criteria = [],
         ?int $limit = null,
         array $orderBy = []
-    ): Promise
-    {
+    ): Promise {
         return call(
             static function(QueryExecutor $queryExecutor, array $criteria, ?int $limit, array $orderBy): \Generator
             {
@@ -223,14 +228,14 @@ abstract class Table
                 /** @var array<int, static> $result */
                 $result = [];
 
-                if(null !== $rows)
+                if (null !== $rows)
                 {
                     /**
                      * @psalm-var array<string, string|int|float|null> $row
                      *
                      * @var array $row
                      */
-                    foreach($rows as $row)
+                    foreach ($rows as $row)
                     {
                         /** @var static $entry */
                         $entry    = yield from self::create($queryExecutor, $row, false);
@@ -268,7 +273,7 @@ abstract class Table
             function(bool $isNew): \Generator
             {
                 /** Store new entry */
-                if(true === $isNew)
+                if (true === $isNew)
                 {
                     $this->changes = [];
 
@@ -281,7 +286,7 @@ abstract class Table
 
                 $changeSet = $this->changes;
 
-                if(0 === \count($changeSet))
+                if (0 === \count($changeSet))
                 {
                     return 0;
                 }
@@ -328,7 +333,7 @@ abstract class Table
 
                 unset($resultSet);
 
-                if(true === \is_array($row))
+                if (true === \is_array($row))
                 {
                     $this->changes = [];
 
@@ -360,7 +365,7 @@ abstract class Table
      */
     final public function remove(): Promise
     {
-        if(true === $this->isNew)
+        if (true === $this->isNew)
         {
             return new Success();
         }
@@ -404,7 +409,7 @@ abstract class Table
      */
     final public function __set(string $name, $value): void
     {
-        if(true === isset($this->columns[$name]))
+        if (true === isset($this->columns[$name]))
         {
             $this->data[$name]    = $value;
             $this->changes[$name] = $value;
@@ -456,7 +461,7 @@ abstract class Table
     {
         $primaryKey = static::primaryKey();
 
-        if(false === \array_key_exists($primaryKey, $changeSet) && 'uuid' === \strtolower($this->columns[$primaryKey]))
+        if (false === \array_key_exists($primaryKey, $changeSet) && 'uuid' === \strtolower($this->columns[$primaryKey]))
         {
             $changeSet[$primaryKey] = uuid();
         }
@@ -464,7 +469,7 @@ abstract class Table
         $queryBuilder = insertQuery(static::tableName(), $changeSet);
 
         /** @todo: fix me */
-        if($this->queryExecutor instanceof AmpPostgreSQLAdapter)
+        if ($this->queryExecutor instanceof AmpPostgreSQLAdapter)
         {
             /**
              * @psalm-suppress UndefinedMethod Cannot find method in traits
@@ -488,7 +493,7 @@ abstract class Table
 
         unset($queryBuilder, $compiledQuery, $resultSet);
 
-        if(false === isset($this->data[$primaryKey]))
+        if (false === isset($this->data[$primaryKey]))
         {
             $this->data[$primaryKey] = $insertedEntryId;
         }
@@ -547,7 +552,7 @@ abstract class Table
     {
         $primaryKey = static::primaryKey();
 
-        if(true === isset($this->data[$primaryKey]) && '' !== (string) $this->data[$primaryKey])
+        if (true === isset($this->data[$primaryKey]) && '' !== (string) $this->data[$primaryKey])
         {
             return (string) $this->data[$primaryKey];
         }
@@ -578,7 +583,7 @@ abstract class Table
 
         $self->columns = $columns;
 
-        if(false === $isNew)
+        if (false === $isNew)
         {
             /**
              * @noinspection CallableParameterUseCaseInTypeContextInspection
@@ -590,7 +595,7 @@ abstract class Table
             $data = unescapeBinary($queryExecutor, $data);
         }
 
-        foreach($data as $key => $value)
+        foreach ($data as $key => $value)
         {
             $self->{$key} = $value;
         }
