@@ -15,13 +15,9 @@ namespace ServiceBus\Storage\ActiveRecord;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @noinspection PhpDocMissingThrowsInspection
- *
  * @internal
  *
  * Generate a version 4 (random) UUID.
- *
- * @return string
  */
 function uuid(): string
 {

@@ -17,9 +17,6 @@ namespace ServiceBus\Storage\ActiveRecord\Exceptions;
  */
 final class PrimaryKeyNotSpecified extends \InvalidArgumentException
 {
-    /**
-     * @param string $expectedKey
-     */
     public function __construct(string $expectedKey)
     {
         parent::__construct(

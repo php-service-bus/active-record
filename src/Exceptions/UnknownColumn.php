@@ -17,10 +17,6 @@ namespace ServiceBus\Storage\ActiveRecord\Exceptions;
  */
 final class UnknownColumn extends \InvalidArgumentException
 {
-    /**
-     * @param string $column
-     * @param string $table
-     */
     public function __construct(string $column, string $table)
     {
         parent::__construct(

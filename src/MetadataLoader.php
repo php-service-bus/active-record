@@ -26,20 +26,10 @@ use ServiceBus\Storage\Common\QueryExecutor;
  */
 final class MetadataLoader
 {
-    /**
-     * @var QueryExecutor
-     */
-    private $queryExecutor;
+    private QueryExecutor $queryExecutor;
 
-    /**
-     * @var CacheAdapter
-     */
-    private $cacheAdapter;
+    private CacheAdapter $cacheAdapter;
 
-    /**
-     * @param QueryExecutor     $queryExecutor
-     * @param CacheAdapter|null $cacheAdapter
-     */
     public function __construct(QueryExecutor $queryExecutor, ?CacheAdapter $cacheAdapter = null)
     {
         $this->queryExecutor = $queryExecutor;
@@ -54,11 +44,7 @@ final class MetadataLoader
      *    ...
      * ]
      *
-     * @noinspection PhpDocRedundantThrowsInspection
-     *
      * @psalm-return \Amp\Promise
-     *
-     * @param string $table
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
@@ -67,7 +53,6 @@ final class MetadataLoader
      */
     public function columns(string $table): Promise
     {
-        /** @psalm-suppress InvalidArgument */
         return call(
             function(string $table): \Generator
             {
@@ -98,8 +83,6 @@ final class MetadataLoader
 
     /**
      * @psalm-return \Generator
-     *
-     * @param string $table
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast

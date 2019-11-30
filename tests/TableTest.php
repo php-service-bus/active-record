@@ -27,10 +27,7 @@ use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
  */
 final class TableTest extends TestCase
 {
-    /**
-     * @var AmpPostgreSQLAdapter
-     */
-    private $adapter;
+    private AmpPostgreSQLAdapter $adapter;
 
     /**
      * {@inheritdoc}
@@ -91,8 +88,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function findNonExistent(): void
     {
@@ -105,8 +100,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function storeNew(): void
     {
@@ -136,8 +129,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function updateStored(): void
     {
@@ -163,8 +154,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function deleteUnStored(): void
     {
@@ -178,8 +167,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function updateWithNoChanges(): void
     {
@@ -197,8 +184,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function findCollection(): void
     {
@@ -231,8 +216,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function successRemove(): void
     {
@@ -251,8 +234,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function saveWithNoPrimaryKey(): void
     {
@@ -265,8 +246,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function unExistsProperty(): void
     {
@@ -280,8 +259,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function saveWithSerialPrimaryKey(): void
     {
@@ -305,8 +282,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function refresh(): void
     {
@@ -326,8 +301,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function selectWithOrder(): void
     {
@@ -345,8 +318,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function refreshWithDeletedEntry(): void
     {
@@ -364,8 +335,6 @@ EOT
      * @test
      *
      * @throws \Throwable
-     *
-     * @return void
      */
     public function updateWithoutPrimaryKey(): void
     {
