@@ -48,9 +48,7 @@ abstract class Table
      *
      * @psalm-var array<string, string|int|float|null>
      */
-    private array
-
- $data = [];
+    private array $data = [];
 
     /**
      * New record flag.
@@ -62,9 +60,7 @@ abstract class Table
      *
      * @psalm-var array<string, string|int|float|null>
      */
-    private array
-
- $changes = [];
+    private array $changes = [];
 
     /**
      * Columns info.
@@ -76,9 +72,7 @@ abstract class Table
      *
      * @psalm-var array<string, string>
      */
-    private array
-
- $columns = [];
+    private array $columns = [];
 
     /**
      * Receive associated table name.
@@ -108,7 +102,7 @@ abstract class Table
     final public static function new(QueryExecutor $queryExecutor, array $data): Promise
     {
         return call(
-            static function(array $data) use ($queryExecutor): \Generator
+            static function (array $data) use ($queryExecutor): \Generator
             {
                 /**
                  * @psalm-var array<string, string|int|float|null> $data
@@ -162,7 +156,7 @@ abstract class Table
     final public static function findOneBy(QueryExecutor $queryExecutor, array $criteria): Promise
     {
         return call(
-            static function(QueryExecutor $queryExecutor, array $criteria): \Generator
+            static function (QueryExecutor $queryExecutor, array $criteria): \Generator
             {
                 /**
                  * @var \Latitude\QueryBuilder\CriteriaInterface[] $criteria
@@ -211,7 +205,7 @@ abstract class Table
         array $orderBy = []
     ): Promise {
         return call(
-            static function(QueryExecutor $queryExecutor, array $criteria, ?int $limit, array $orderBy): \Generator
+            static function (QueryExecutor $queryExecutor, array $criteria, ?int $limit, array $orderBy): \Generator
             {
                 /**
                  * @var \Latitude\QueryBuilder\CriteriaInterface[] $criteria
@@ -270,7 +264,7 @@ abstract class Table
     final public function save(): Promise
     {
         return call(
-            function(bool $isNew): \Generator
+            function (bool $isNew): \Generator
             {
                 /** Store new entry */
                 if (true === $isNew)
@@ -315,7 +309,7 @@ abstract class Table
     {
         /** @psalm-suppress MixedTypeCoercion */
         return call(
-            function(): \Generator
+            function (): \Generator
             {
                 /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
                 $resultSet = yield find(

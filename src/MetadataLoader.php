@@ -54,7 +54,7 @@ final class MetadataLoader
     public function columns(string $table): Promise
     {
         return call(
-            function(string $table): \Generator
+            function (string $table): \Generator
             {
                 $cacheKey = \sha1($table . '_metadata_columns');
 
