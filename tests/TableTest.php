@@ -13,7 +13,7 @@ declare(strict_types = 1);
 namespace ServiceBus\Storage\ActiveRecord\Tests;
 
 use function Amp\Promise\wait;
-use function ServiceBus\Storage\ActiveRecord\uuid;
+use function ServiceBus\Common\uuid;
 use function ServiceBus\Storage\Sql\AmpPosgreSQL\postgreSqlAdapterFactory;
 use Amp\Promise;
 use PHPUnit\Framework\TestCase;
