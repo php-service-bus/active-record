@@ -1,8 +1,5 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#PHPDoc tag @return contains unresolvable type#'
-			path: %currentWorkingDirectory%/src
-		-
 			message: '#Latitude\\QueryBuilder\\Query\\InsertQuery::returning#'
 			path: %currentWorkingDirectory%/src/Table.php

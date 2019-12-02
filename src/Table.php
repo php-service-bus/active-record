@@ -13,6 +13,7 @@ declare(strict_types = 1);
 namespace ServiceBus\Storage\ActiveRecord;
 
 use function Amp\call;
+use function ServiceBus\Common\uuid;
 use function ServiceBus\Storage\Sql\buildQuery;
 use function ServiceBus\Storage\Sql\equalsCriteria;
 use function ServiceBus\Storage\Sql\fetchAll;
@@ -39,7 +40,7 @@ abstract class Table
     /**
      * Stored entry identifier.
      */
-    private ?string $insertId;
+    private ?string $insertId = null;
 
     private QueryExecutor $queryExecutor;
 
@@ -90,14 +91,13 @@ abstract class Table
     /**
      * Create and persist entry.
      *
-     * @psalm-suppress MixedReturnTypeCoercion
+     * Returns \ServiceBus\Storage\ActiveRecord\Table
+     *
      * @psalm-param    array<string, float|int|string|null> $data
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UnknownColumn
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
-     *
-     * @return Promise<\ServiceBus\Storage\ActiveRecord\Table>
      */
     final public static function new(QueryExecutor $queryExecutor, array $data): Promise
     {
@@ -125,6 +125,8 @@ abstract class Table
     /**
      * Find entry by primary key.
      *
+     * Returns static|null
+     *
      * @param int|string $id
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
@@ -132,8 +134,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\OneResultExpected
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
-     *
-     * @return Promise<static|null>
      */
     final public static function find(QueryExecutor $queryExecutor, $id): Promise
     {
@@ -143,15 +143,14 @@ abstract class Table
     /**
      * Find one entry by specified criteria.
      *
-     * @psalm-suppress MixedReturnTypeCoercion
+     * Returns static|null
+     *
      * @psalm-param    array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed Error getting operation  result
      * @throws \ServiceBus\Storage\Common\Exceptions\OneResultExpected The result must contain only 1 row
-     *
-     * @return Promise<static|null>
      */
     final public static function findOneBy(QueryExecutor $queryExecutor, array $criteria): Promise
     {
@@ -173,7 +172,7 @@ abstract class Table
 
                 unset($resultSet);
 
-                if (true === \is_array($data))
+                if (\is_array($data) === true)
                 {
                     return yield from self::create($queryExecutor, $data, false);
                 }
@@ -186,6 +185,8 @@ abstract class Table
     /**
      * Find entries by specified criteria.
      *
+     * Returns array<int, static>
+     *
      * @psalm-param  array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
      * @psalm-param  array<string, string>                      $orderBy
      * @psalm-return \Amp\Promise
@@ -195,8 +196,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed Error getting operation  result
-     *
-     * @return Promise<array<int, static>>
      */
     final public static function findBy(
         QueryExecutor $queryExecutor,
@@ -222,7 +221,7 @@ abstract class Table
                 /** @var array<int, static> $result */
                 $result = [];
 
-                if (null !== $rows)
+                if ($rows !== null)
                 {
                     /**
                      * @psalm-var array<string, string|int|float|null> $row
@@ -251,15 +250,12 @@ abstract class Table
     /**
      * Save entry changes.
      *
-     * @psalm-suppress MixedReturnTypeCoercion
+     * Returns the ID of the saved entry, or the number of affected rows (in the case of an update)
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed Duplicate entry
-     *
-     * @return Promise<int|string> Returns the ID of the saved entry, or the number of affected rows (in the case of an
-     *                             update)
      */
     final public function save(): Promise
     {
@@ -267,7 +263,7 @@ abstract class Table
             function (bool $isNew): \Generator
             {
                 /** Store new entry */
-                if (true === $isNew)
+                if ($isNew === true)
                 {
                     $this->changes = [];
 
@@ -280,7 +276,7 @@ abstract class Table
 
                 $changeSet = $this->changes;
 
-                if (0 === \count($changeSet))
+                if (\count($changeSet) === 0)
                 {
                     return 0;
                 }
@@ -302,8 +298,6 @@ abstract class Table
      *                                                                        occured)
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
-     *
-     * @return Promise
      */
     public function refresh(): Promise
     {
@@ -327,7 +321,7 @@ abstract class Table
 
                 unset($resultSet);
 
-                if (true === \is_array($row))
+                if (\is_array($row) === true)
                 {
                     $this->changes = [];
 
@@ -354,12 +348,10 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
-     *
-     * @return Promise Does not return result
      */
     final public function remove(): Promise
     {
-        if (true === $this->isNew)
+        if ($this->isNew === true)
         {
             return new Success();
         }
@@ -403,7 +395,7 @@ abstract class Table
      */
     final public function __set(string $name, $value): void
     {
-        if (true === isset($this->columns[$name]))
+        if (isset($this->columns[$name]) === true)
         {
             $this->data[$name]    = $value;
             $this->changes[$name] = $value;
@@ -448,14 +440,12 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
-     *
-     * @return \Generator<int|string>
      */
     private function storeNewEntry(array $changeSet): \Generator
     {
         $primaryKey = static::primaryKey();
 
-        if (false === \array_key_exists($primaryKey, $changeSet) && 'uuid' === \strtolower($this->columns[$primaryKey]))
+        if (\array_key_exists($primaryKey, $changeSet) === false && \strtolower($this->columns[$primaryKey]) === 'uuid')
         {
             $changeSet[$primaryKey] = uuid();
         }
@@ -487,7 +477,7 @@ abstract class Table
 
         unset($queryBuilder, $compiledQuery, $resultSet);
 
-        if (false === isset($this->data[$primaryKey]))
+        if (isset($this->data[$primaryKey]) === false)
         {
             $this->data[$primaryKey] = $insertedEntryId;
         }
@@ -509,8 +499,6 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
-     *
-     * @return \Generator<int>
      */
     private function updateExistsEntry(array $changeSet): \Generator
     {
@@ -546,7 +534,7 @@ abstract class Table
     {
         $primaryKey = static::primaryKey();
 
-        if (true === isset($this->data[$primaryKey]) && '' !== (string) $this->data[$primaryKey])
+        if (isset($this->data[$primaryKey]) === true && (string) $this->data[$primaryKey] !== '')
         {
             return (string) $this->data[$primaryKey];
         }
@@ -563,8 +551,6 @@ abstract class Table
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
-     *
-     * @return \Generator<static>
      */
     private static function create(QueryExecutor $queryExecutor, array $data, bool $isNew): \Generator
     {
@@ -577,7 +563,7 @@ abstract class Table
 
         $self->columns = $columns;
 
-        if (false === $isNew)
+        if ($isNew === false)
         {
             /**
              * @noinspection CallableParameterUseCaseInTypeContextInspection

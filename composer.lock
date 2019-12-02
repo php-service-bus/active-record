@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "99851a43027baf690f5b5a4a4c1a35e1",
+    "content-hash": "29196e413070c2422113599a1a4b93ae",
     "packages": [
         {
             "name": "amphp/amp",
@@ -326,16 +326,16 @@
         },
         {
             "name": "php-service-bus/cache",
-            "version": "v4.0.0",
+            "version": "v4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-service-bus/cache.git",
-                "reference": "6edbfd21f614c96f9bd9b2fe662b625c0010c167"
+                "reference": "e61028083103fae7dfc7d1b81dca9a68bc9310b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-service-bus/cache/zipball/6edbfd21f614c96f9bd9b2fe662b625c0010c167",
-                "reference": "6edbfd21f614c96f9bd9b2fe662b625c0010c167",
+                "url": "https://api.github.com/repos/php-service-bus/cache/zipball/e61028083103fae7dfc7d1b81dca9a68bc9310b9",
+                "reference": "e61028083103fae7dfc7d1b81dca9a68bc9310b9",
                 "shasum": ""
             },
             "require": {
@@ -343,7 +343,7 @@
             },
             "require-dev": {
                 "amphp/amp": "v2.4.*",
-                "php-service-bus/code-style-config": "v1.1.*",
+                "php-service-bus/code-style-config": "v1.2.*",
                 "phpstan/phpstan": "v0.11.*",
                 "phpunit/phpunit": "v8.4.*",
                 "vimeo/psalm": "v3.7.*"
@@ -372,20 +372,76 @@
                 "command-bus",
                 "messaging"
             ],
-            "time": "2019-11-29T21:30:41+00:00"
+            "time": "2019-12-02T15:08:13+00:00"
         },
         {
-            "name": "php-service-bus/storage-common",
-            "version": "v4.0.0",
+            "name": "php-service-bus/common",
+            "version": "v4.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-service-bus/storage-common.git",
-                "reference": "da9208c496116b62f34c46036e6fffcf2d0a37fd"
+                "url": "https://github.com/php-service-bus/common.git",
+                "reference": "ae3c1b3801039124c1ca2b5b278ad13a6f3e2801"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-service-bus/storage-common/zipball/da9208c496116b62f34c46036e6fffcf2d0a37fd",
-                "reference": "da9208c496116b62f34c46036e6fffcf2d0a37fd",
+                "url": "https://api.github.com/repos/php-service-bus/common/zipball/ae3c1b3801039124c1ca2b5b278ad13a6f3e2801",
+                "reference": "ae3c1b3801039124c1ca2b5b278ad13a6f3e2801",
+                "shasum": ""
+            },
+            "require": {
+                "amphp/amp": "v2.4.*",
+                "ext-json": "*",
+                "php": ">=7.4",
+                "ramsey/uuid": "v3.8.*"
+            },
+            "require-dev": {
+                "php-service-bus/code-style-config": "v1.2.*",
+                "phpstan/phpstan": "v0.11.*",
+                "phpunit/phpunit": "v8.4.*",
+                "symfony/dependency-injection": "v5.0.*",
+                "vimeo/psalm": "v3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ServiceBus\\Common\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Masiukevich Maksim",
+                    "email": "dev@async-php.com",
+                    "homepage": "https://github.com/mmasiukevich",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "PHP Service Bus common component",
+            "keywords": [
+                "async-php",
+                "command-bus",
+                "messaging"
+            ],
+            "time": "2019-12-02T14:33:55+00:00"
+        },
+        {
+            "name": "php-service-bus/storage-common",
+            "version": "v4.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-service-bus/storage-common.git",
+                "reference": "ab0b3096e9eb034b2acbc3e8788a7fbe70c0ccd3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-service-bus/storage-common/zipball/ab0b3096e9eb034b2acbc3e8788a7fbe70c0ccd3",
+                "reference": "ab0b3096e9eb034b2acbc3e8788a7fbe70c0ccd3",
                 "shasum": ""
             },
             "require": {
@@ -393,7 +449,7 @@
             },
             "require-dev": {
                 "amphp/amp": "v2.4.*",
-                "php-service-bus/code-style-config": "v1.1.*",
+                "php-service-bus/code-style-config": "v1.2.*",
                 "phpstan/phpstan": "v0.11.*",
                 "phpunit/phpunit": "v8.4.*",
                 "vimeo/psalm": "v3.7.*"
@@ -422,20 +478,20 @@
                 "command-bus",
                 "messaging"
             ],
-            "time": "2019-11-29T23:41:09+00:00"
+            "time": "2019-12-02T18:06:07+00:00"
         },
         {
             "name": "php-service-bus/storage-sql",
-            "version": "v4.0.0",
+            "version": "v4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-service-bus/storage-sql.git",
-                "reference": "be20af39b444f14ece4cc7f8a7485214c649327e"
+                "reference": "894039e66abdadee7cf230565f271946c94cea51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-service-bus/storage-sql/zipball/be20af39b444f14ece4cc7f8a7485214c649327e",
-                "reference": "be20af39b444f14ece4cc7f8a7485214c649327e",
+                "url": "https://api.github.com/repos/php-service-bus/storage-sql/zipball/894039e66abdadee7cf230565f271946c94cea51",
+                "reference": "894039e66abdadee7cf230565f271946c94cea51",
                 "shasum": ""
             },
             "require": {
@@ -448,7 +504,7 @@
             },
             "require-dev": {
                 "doctrine/dbal": "v2.10.*",
-                "php-service-bus/code-style-config": "v1.1.*",
+                "php-service-bus/code-style-config": "v1.2.*",
                 "phpstan/phpstan": "v0.11.*",
                 "phpunit/phpunit": "v8.4.*",
                 "vimeo/psalm": "v3.7.*"
@@ -484,7 +540,7 @@
                 "postgresql",
                 "sql"
             ],
-            "time": "2019-11-30T00:20:34+00:00"
+            "time": "2019-12-02T18:22:48+00:00"
         },
         {
             "name": "psr/log",
@@ -4590,16 +4646,16 @@
         },
         {
             "name": "vimeo/psalm",
-            "version": "3.7.0",
+            "version": "3.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "a154191922d14dcdde8ef348520a88d735d82304"
+                "reference": "8e6aa8a07d148dcedf58cccf32ce4b602b422035"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/a154191922d14dcdde8ef348520a88d735d82304",
-                "reference": "a154191922d14dcdde8ef348520a88d735d82304",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/8e6aa8a07d148dcedf58cccf32ce4b602b422035",
+                "reference": "8e6aa8a07d148dcedf58cccf32ce4b602b422035",
                 "shasum": ""
             },
             "require": {
@@ -4629,7 +4685,7 @@
                 "phpunit/phpunit": "^7.5 || ^8.0",
                 "psalm/plugin-phpunit": "^0.6",
                 "slevomat/coding-standard": "^5.0",
-                "squizlabs/php_codesniffer": "3.4.0",
+                "squizlabs/php_codesniffer": "^3.5",
                 "symfony/process": "^4.3"
             },
             "suggest": {
@@ -4674,7 +4730,7 @@
                 "inspection",
                 "php"
             ],
-            "time": "2019-11-27T14:18:47+00:00"
+            "time": "2019-12-02T05:11:45+00:00"
         },
         {
             "name": "webmozart/assert",

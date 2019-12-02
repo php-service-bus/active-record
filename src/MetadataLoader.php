@@ -44,12 +44,8 @@ final class MetadataLoader
      *    ...
      * ]
      *
-     * @psalm-return \Amp\Promise
-     *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
-     *
-     * @return Promise<array<string, string>>
      */
     public function columns(string $table): Promise
     {
@@ -61,7 +57,7 @@ final class MetadataLoader
                 /** @var array|null $columns */
                 $columns = yield $this->cacheAdapter->get($cacheKey);
 
-                if (null !== $columns)
+                if ($columns !== null)
                 {
                     return $columns;
                 }
@@ -82,16 +78,12 @@ final class MetadataLoader
     }
 
     /**
-     * @psalm-return \Generator
-     *
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
      * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
-     *
-     * @return \Generator<array<string, string>>
      */
     private function loadColumns(string $table): \Generator
     {
