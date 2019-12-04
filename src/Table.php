@@ -39,29 +39,38 @@ abstract class Table
 {
     /**
      * Stored entry identifier.
+     *
+     * @var string|null
      */
-    private ?string $insertId = null;
+    private $insertId = null;
 
-    private QueryExecutor $queryExecutor;
+    /** @var QueryExecutor */
+    private $queryExecutor;
 
     /**
      * Data collection.
      *
      * @psalm-var array<string, string|int|float|null>
+     *
+     * @var array
      */
-    private array $data = [];
+    private $data = [];
 
     /**
      * New record flag.
+     *
+     * @var bool
      */
-    private bool $isNew = true;
+    private $isNew = true;
 
     /**
      * Data change list.
      *
      * @psalm-var array<string, string|int|float|null>
+     *
+     * @var array
      */
-    private array $changes = [];
+    private $changes = [];
 
     /**
      * Columns info.
@@ -72,8 +81,10 @@ abstract class Table
      * ]
      *
      * @psalm-var array<string, string>
+     *
+     * @var array
      */
-    private array $columns = [];
+    private $columns = [];
 
     /**
      * Receive associated table name.

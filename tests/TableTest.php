@@ -27,7 +27,8 @@ use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
  */
 final class TableTest extends TestCase
 {
-    private AmpPostgreSQLAdapter $adapter;
+    /** @var AmpPostgreSQLAdapter  */
+    private $adapter;
 
     /**
      * {@inheritdoc}
@@ -89,9 +90,9 @@ EOT
      *
      * @throws \Throwable
      */
-    public function findNonExistent(): void
+    public function findNonExistent(): \Generator
     {
-        $testTable = wait(TestTable::find($this->adapter, uuid()));
+        $testTable = yield TestTable::find($this->adapter, uuid());
 
         static::assertNull($testTable);
     }
@@ -101,16 +102,14 @@ EOT
      *
      * @throws \Throwable
      */
-    public function storeNew(): void
+    public function storeNew(): \Generator
     {
         $expectedId = uuid();
 
         /** @var TestTable $testTable */
-        $testTable = wait(
-            TestTable::new(
-                $this->adapter,
-                ['id' => $expectedId, 'first_value' => 'first', 'second_value' => 'second']
-            )
+        $testTable = yield TestTable::new(
+            $this->adapter,
+            ['id' => $expectedId, 'first_value' => 'first', 'second_value' => 'second']
         );
 
         $id = $testTable->lastInsertId();
@@ -118,7 +117,7 @@ EOT
         static::assertSame($expectedId, $id);
 
         /** @var TestTable $testTable */
-        $testTable = wait(TestTable::find($this->adapter, $id));
+        $testTable = yield TestTable::find($this->adapter, $id);
 
         static::assertNotNull($testTable);
         static::assertSame('first', $testTable->first_value);
@@ -130,22 +129,22 @@ EOT
      *
      * @throws \Throwable
      */
-    public function updateStored(): void
+    public function updateStored(): \Generator
     {
         $id = uuid();
 
         /** @var TestTable $testTable */
-        $testTable = wait(TestTable::new($this->adapter, ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']));
+        $testTable = yield TestTable::new($this->adapter, ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']);
 
-        wait($testTable->save());
+        yield $testTable->save();
 
         $testTable->first_value = 'qwerty';
 
-        wait($testTable->save());
+        yield $testTable->save();
 
         unset($testTable);
 
-        $testTable = wait(TestTable::find($this->adapter, $id));
+        $testTable = yield TestTable::find($this->adapter, $id);
 
         static::assertSame('qwerty', $testTable->first_value);
     }
@@ -155,12 +154,12 @@ EOT
      *
      * @throws \Throwable
      */
-    public function deleteUnStored(): void
+    public function deleteUnStored(): \Generator
     {
         /** @var TestTable $testTable */
-        $testTable = wait(TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => 'first', 'second_value' => 'second']));
+        $testTable = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => 'first', 'second_value' => 'second']);
 
-        wait($testTable->remove());
+        yield $testTable->remove();
     }
 
     /**
@@ -168,16 +167,16 @@ EOT
      *
      * @throws \Throwable
      */
-    public function updateWithNoChanges(): void
+    public function updateWithNoChanges(): \Generator
     {
         $id = uuid();
         /** @var TestTable $testTable */
-        $testTable = wait(TestTable::new($this->adapter, ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']));
+        $testTable = yield TestTable::new($this->adapter, ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']);
 
-        wait($testTable->save());
+        yield $testTable->save();
 
         static::assertSame($id, $testTable->lastInsertId());
-        static::assertSame(0, wait($testTable->save()));
+        static::assertSame(0, yield $testTable->save());
     }
 
     /**
@@ -185,7 +184,7 @@ EOT
      *
      * @throws \Throwable
      */
-    public function findCollection(): void
+    public function findCollection(): \Generator
     {
         $collection = [
             TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '7']),
@@ -201,13 +200,13 @@ EOT
         foreach ($collection as $promise)
         {
             /** @var TestTable $entity */
-            $entity = wait($promise);
+            $entity = yield $promise;
 
-            wait($entity->save());
+            yield $entity->save();
         }
 
         /** @var TestTable[] $result */
-        $result = wait(TestTable::findBy($this->adapter, [], 3));
+        $result = yield TestTable::findBy($this->adapter, [], 3);
 
         static::assertCount(3, $result);
     }
@@ -217,15 +216,15 @@ EOT
      *
      * @throws \Throwable
      */
-    public function successRemove(): void
+    public function successRemove(): \Generator
     {
-        $testTable = wait(TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => 'first', 'second_value' => 'second']));
+        $testTable = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => 'first', 'second_value' => 'second']);
 
-        wait($testTable->save());
-        wait($testTable->remove());
+        yield$testTable->save();
+        yield$testTable->remove();
 
         /** @var TestTable[] $result */
-        $result = wait(TestTable::findBy($this->adapter));
+        $result = yield TestTable::findBy($this->adapter);
 
         static::assertCount(0, $result);
     }
@@ -235,11 +234,12 @@ EOT
      *
      * @throws \Throwable
      */
-    public function saveWithNoPrimaryKey(): void
+    public function saveWithNoPrimaryKey(): \Generator
     {
         /** @var TestTable $testTable */
-        $testTable = wait(TestTable::new($this->adapter, ['first_value' => 'first', 'second_value' => 'second']));
-        wait($testTable->save());
+        $testTable = yield TestTable::new($this->adapter, ['first_value' => 'first', 'second_value' => 'second']);
+
+        yield $testTable->save();
     }
 
     /**
@@ -247,12 +247,12 @@ EOT
      *
      * @throws \Throwable
      */
-    public function unExistsProperty(): void
+    public function unExistsProperty(): \Generator
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Column "qqqq" does not exist in table "test_table"');
 
-        wait(TestTable::new($this->adapter, ['qqqq' => '111']));
+        yield TestTable::new($this->adapter, ['qqqq' => '111']);
     }
 
     /**
@@ -260,15 +260,15 @@ EOT
      *
      * @throws \Throwable
      */
-    public function saveWithSerialPrimaryKey(): void
+    public function saveWithSerialPrimaryKey(): \Generator
     {
         /** @var SecondTestTable $table */
-        $table = wait(SecondTestTable::new($this->adapter, ['title' => 'root']));
+        $table = yield SecondTestTable::new($this->adapter, ['title' => 'root']);
 
         unset($table);
 
         /** @var SecondTestTable[] $tables */
-        $tables = wait(SecondTestTable::findBy($this->adapter));
+        $tables = yield SecondTestTable::findBy($this->adapter);
 
         static::assertCount(1, $tables);
 
@@ -283,16 +283,16 @@ EOT
      *
      * @throws \Throwable
      */
-    public function refresh(): void
+    public function refresh(): \Generator
     {
         /** @var SecondTestTable $table */
-        $table = wait(SecondTestTable::new($this->adapter, ['title' => 'root']));
+        $table = yield SecondTestTable::new($this->adapter, ['title' => 'root']);
 
         static::assertTrue(isset($table->pk));
 
         $table->title = 'qwerty';
 
-        wait($table->refresh());
+        yield $table->refresh();
 
         static::assertSame('root', $table->title);
     }
@@ -302,14 +302,14 @@ EOT
      *
      * @throws \Throwable
      */
-    public function selectWithOrder(): void
+    public function selectWithOrder(): \Generator
     {
-        wait(TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']));
-        wait(TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '2', 'second_value' => '2']));
-        wait(TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '3', 'second_value' => '1']));
+        yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
+        yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '2', 'second_value' => '2']);
+        yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '3', 'second_value' => '1']);
 
         /** @var TestTable[] $collection */
-        $collection = wait(TestTable::findBy($this->adapter, [], 50, ['first_value' => 'desc']));
+        $collection = yield TestTable::findBy($this->adapter, [], 50, ['first_value' => 'desc']);
 
         static::assertCount(3, $collection);
     }
@@ -319,16 +319,16 @@ EOT
      *
      * @throws \Throwable
      */
-    public function refreshWithDeletedEntry(): void
+    public function refreshWithDeletedEntry(): \Generator
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Failed to update entity: data has been deleted');
 
         /** @var TestTable $table */
-        $table = wait(TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']));
+        $table = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
 
-        wait($table->remove());
-        wait($table->refresh());
+        yield $table->remove();
+        yield $table->refresh();
     }
 
     /**
@@ -336,16 +336,16 @@ EOT
      *
      * @throws \Throwable
      */
-    public function updateWithoutPrimaryKey(): void
+    public function updateWithoutPrimaryKey(): \Generator
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('In the parameters of the entity must be specified element with the index "id" (primary key)');
 
         /** @var TestTable $table */
-        $table = wait(TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']));
+        $table = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
 
         $table->id = null;
 
-        wait($table->save());
+        yield $table->save();
     }
 }

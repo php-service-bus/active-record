@@ -26,9 +26,11 @@ use ServiceBus\Storage\Common\QueryExecutor;
  */
 final class MetadataLoader
 {
-    private QueryExecutor $queryExecutor;
+    /** @var QueryExecutor */
+    private $queryExecutor;
 
-    private CacheAdapter $cacheAdapter;
+    /** @var CacheAdapter */
+    private $cacheAdapter;
 
     public function __construct(QueryExecutor $queryExecutor, ?CacheAdapter $cacheAdapter = null)
     {
