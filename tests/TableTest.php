@@ -12,6 +12,7 @@ declare(strict_types = 1);
 
 namespace ServiceBus\Storage\ActiveRecord\Tests;
 
+use Amp\Loop;
 use function Amp\Promise\wait;
 use function ServiceBus\Common\uuid;
 use function ServiceBus\Storage\Sql\AmpPosgreSQL\postgreSqlAdapterFactory;
@@ -27,7 +28,7 @@ use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
  */
 final class TableTest extends TestCase
 {
-    /** @var AmpPostgreSQLAdapter  */
+    /** @var AmpPostgreSQLAdapter */
     private $adapter;
 
     /**
@@ -102,26 +103,31 @@ EOT
      *
      * @throws \Throwable
      */
-    public function storeNew(): \Generator
+    public function storeNew(): void
     {
-        $expectedId = uuid();
+        Loop::run(
+            function (): \Generator
+            {
+                $expectedId = uuid();
 
-        /** @var TestTable $testTable */
-        $testTable = yield TestTable::new(
-            $this->adapter,
-            ['id' => $expectedId, 'first_value' => 'first', 'second_value' => 'second']
+                /** @var TestTable $testTable */
+                $testTable = yield TestTable::new(
+                    $this->adapter,
+                    ['id' => $expectedId, 'first_value' => 'first', 'second_value' => 'second']
+                );
+
+                $id = $testTable->lastInsertId();
+
+                static::assertSame($expectedId, $id);
+
+                /** @var TestTable $testTable */
+                $testTable = yield TestTable::find($this->adapter, $id);
+
+                static::assertNotNull($testTable);
+                static::assertSame('first', $testTable->first_value);
+                static::assertSame('second', $testTable->second_value);
+            }
         );
-
-        $id = $testTable->lastInsertId();
-
-        static::assertSame($expectedId, $id);
-
-        /** @var TestTable $testTable */
-        $testTable = yield TestTable::find($this->adapter, $id);
-
-        static::assertNotNull($testTable);
-        static::assertSame('first', $testTable->first_value);
-        static::assertSame('second', $testTable->second_value);
     }
 
     /**
@@ -129,24 +135,29 @@ EOT
      *
      * @throws \Throwable
      */
-    public function updateStored(): \Generator
+    public function updateStored(): void
     {
-        $id = uuid();
+        Loop::run(
+            function (): \Generator
+            {
+                $id = uuid();
 
-        /** @var TestTable $testTable */
-        $testTable = yield TestTable::new($this->adapter, ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']);
+                /** @var TestTable $testTable */
+                $testTable = yield TestTable::new($this->adapter, ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']);
 
-        yield $testTable->save();
+                yield $testTable->save();
 
-        $testTable->first_value = 'qwerty';
+                $testTable->first_value = 'qwerty';
 
-        yield $testTable->save();
+                yield $testTable->save();
 
-        unset($testTable);
+                unset($testTable);
 
-        $testTable = yield TestTable::find($this->adapter, $id);
+                $testTable = yield TestTable::find($this->adapter, $id);
 
-        static::assertSame('qwerty', $testTable->first_value);
+                static::assertSame('qwerty', $testTable->first_value);
+            }
+        );
     }
 
     /**
@@ -154,12 +165,17 @@ EOT
      *
      * @throws \Throwable
      */
-    public function deleteUnStored(): \Generator
+    public function deleteUnStored(): void
     {
-        /** @var TestTable $testTable */
-        $testTable = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => 'first', 'second_value' => 'second']);
+        Loop::run(
+            function (): \Generator
+            {
+                /** @var TestTable $testTable */
+                $testTable = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => 'first', 'second_value' => 'second']);
 
-        yield $testTable->remove();
+                yield $testTable->remove();
+            }
+        );
     }
 
     /**
@@ -167,16 +183,22 @@ EOT
      *
      * @throws \Throwable
      */
-    public function updateWithNoChanges(): \Generator
+    public function updateWithNoChanges(): void
     {
-        $id = uuid();
-        /** @var TestTable $testTable */
-        $testTable = yield TestTable::new($this->adapter, ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']);
+        Loop::run(
+            function (): \Generator
+            {
+                $id = uuid();
 
-        yield $testTable->save();
+                /** @var TestTable $testTable */
+                $testTable = yield TestTable::new($this->adapter, ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']);
 
-        static::assertSame($id, $testTable->lastInsertId());
-        static::assertSame(0, yield $testTable->save());
+                yield $testTable->save();
+
+                static::assertSame($id, $testTable->lastInsertId());
+                static::assertSame(0, yield $testTable->save());
+            }
+        );
     }
 
     /**
@@ -184,31 +206,36 @@ EOT
      *
      * @throws \Throwable
      */
-    public function findCollection(): \Generator
+    public function findCollection(): void
     {
-        $collection = [
-            TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '7']),
-            TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '2', 'second_value' => '6']),
-            TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '3', 'second_value' => '5']),
-            TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '4', 'second_value' => '4']),
-            TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '5', 'second_value' => '3']),
-            TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '6', 'second_value' => '2']),
-            TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '7', 'second_value' => '1']),
-        ];
+        Loop::run(
+            function (): \Generator
+            {
+                $collection = [
+                    TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '7']),
+                    TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '2', 'second_value' => '6']),
+                    TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '3', 'second_value' => '5']),
+                    TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '4', 'second_value' => '4']),
+                    TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '5', 'second_value' => '3']),
+                    TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '6', 'second_value' => '2']),
+                    TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '7', 'second_value' => '1']),
+                ];
 
-        /** @var Promise $promise */
-        foreach ($collection as $promise)
-        {
-            /** @var TestTable $entity */
-            $entity = yield $promise;
+                /** @var Promise $promise */
+                foreach ($collection as $promise)
+                {
+                    /** @var TestTable $entity */
+                    $entity = yield $promise;
 
-            yield $entity->save();
-        }
+                    yield $entity->save();
+                }
 
-        /** @var TestTable[] $result */
-        $result = yield TestTable::findBy($this->adapter, [], 3);
+                /** @var TestTable[] $result */
+                $result = yield TestTable::findBy($this->adapter, [], 3);
 
-        static::assertCount(3, $result);
+                static::assertCount(3, $result);
+            }
+        );
     }
 
     /**
@@ -216,17 +243,23 @@ EOT
      *
      * @throws \Throwable
      */
-    public function successRemove(): \Generator
+    public function successRemove(): void
     {
-        $testTable = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => 'first', 'second_value' => 'second']);
+        Loop::run(
+            function (): \Generator
+            {
+                /** @var TestTable $testTable */
+                $testTable = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => 'first', 'second_value' => 'second']);
 
-        yield$testTable->save();
-        yield$testTable->remove();
+                yield $testTable->save();
+                yield $testTable->remove();
 
-        /** @var TestTable[] $result */
-        $result = yield TestTable::findBy($this->adapter);
+                /** @var TestTable[] $result */
+                $result = yield TestTable::findBy($this->adapter);
 
-        static::assertCount(0, $result);
+                static::assertCount(0, $result);
+            }
+        );
     }
 
     /**
@@ -234,12 +267,17 @@ EOT
      *
      * @throws \Throwable
      */
-    public function saveWithNoPrimaryKey(): \Generator
+    public function saveWithNoPrimaryKey(): void
     {
-        /** @var TestTable $testTable */
-        $testTable = yield TestTable::new($this->adapter, ['first_value' => 'first', 'second_value' => 'second']);
+        Loop::run(
+            function (): \Generator
+            {
+                /** @var TestTable $testTable */
+                $testTable = yield TestTable::new($this->adapter, ['first_value' => 'first', 'second_value' => 'second']);
 
-        yield $testTable->save();
+                yield $testTable->save();
+            }
+        );
     }
 
     /**
@@ -247,12 +285,17 @@ EOT
      *
      * @throws \Throwable
      */
-    public function unExistsProperty(): \Generator
+    public function unExistsProperty(): void
     {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Column "qqqq" does not exist in table "test_table"');
+        Loop::run(
+            function (): \Generator
+            {
+                $this->expectException(\LogicException::class);
+                $this->expectExceptionMessage('Column "qqqq" does not exist in table "test_table"');
 
-        yield TestTable::new($this->adapter, ['qqqq' => '111']);
+                yield TestTable::new($this->adapter, ['qqqq' => '111']);
+            }
+        );
     }
 
     /**
@@ -260,22 +303,27 @@ EOT
      *
      * @throws \Throwable
      */
-    public function saveWithSerialPrimaryKey(): \Generator
+    public function saveWithSerialPrimaryKey(): void
     {
-        /** @var SecondTestTable $table */
-        $table = yield SecondTestTable::new($this->adapter, ['title' => 'root']);
+        Loop::run(
+            function (): \Generator
+            {
+                /** @var SecondTestTable $table */
+                $table = yield SecondTestTable::new($this->adapter, ['title' => 'root']);
 
-        unset($table);
+                unset($table);
 
-        /** @var SecondTestTable[] $tables */
-        $tables = yield SecondTestTable::findBy($this->adapter);
+                /** @var SecondTestTable[] $tables */
+                $tables = yield SecondTestTable::findBy($this->adapter);
 
-        static::assertCount(1, $tables);
+                static::assertCount(1, $tables);
 
-        /** @var SecondTestTable $table */
-        $table = \reset($tables);
+                /** @var SecondTestTable $table */
+                $table = \reset($tables);
 
-        static::assertSame('root', $table->title);
+                static::assertSame('root', $table->title);
+            }
+        );
     }
 
     /**
@@ -283,18 +331,23 @@ EOT
      *
      * @throws \Throwable
      */
-    public function refresh(): \Generator
+    public function refresh(): void
     {
-        /** @var SecondTestTable $table */
-        $table = yield SecondTestTable::new($this->adapter, ['title' => 'root']);
+        Loop::run(
+            function (): \Generator
+            {
+                /** @var SecondTestTable $table */
+                $table = yield SecondTestTable::new($this->adapter, ['title' => 'root']);
 
-        static::assertTrue(isset($table->pk));
+                static::assertTrue(isset($table->pk));
 
-        $table->title = 'qwerty';
+                $table->title = 'qwerty';
 
-        yield $table->refresh();
+                yield $table->refresh();
 
-        static::assertSame('root', $table->title);
+                static::assertSame('root', $table->title);
+            }
+        );
     }
 
     /**
@@ -302,16 +355,21 @@ EOT
      *
      * @throws \Throwable
      */
-    public function selectWithOrder(): \Generator
+    public function selectWithOrder(): void
     {
-        yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
-        yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '2', 'second_value' => '2']);
-        yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '3', 'second_value' => '1']);
+        Loop::run(
+            function (): \Generator
+            {
+                yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
+                yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '2', 'second_value' => '2']);
+                yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '3', 'second_value' => '1']);
 
-        /** @var TestTable[] $collection */
-        $collection = yield TestTable::findBy($this->adapter, [], 50, ['first_value' => 'desc']);
+                /** @var TestTable[] $collection */
+                $collection = yield TestTable::findBy($this->adapter, [], 50, ['first_value' => 'desc']);
 
-        static::assertCount(3, $collection);
+                static::assertCount(3, $collection);
+            }
+        );
     }
 
     /**
@@ -319,16 +377,21 @@ EOT
      *
      * @throws \Throwable
      */
-    public function refreshWithDeletedEntry(): \Generator
+    public function refreshWithDeletedEntry(): void
     {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Failed to update entity: data has been deleted');
+        Loop::run(
+            function (): \Generator
+            {
+                $this->expectException(\RuntimeException::class);
+                $this->expectExceptionMessage('Failed to update entity: data has been deleted');
 
-        /** @var TestTable $table */
-        $table = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
+                /** @var TestTable $table */
+                $table = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
 
-        yield $table->remove();
-        yield $table->refresh();
+                yield $table->remove();
+                yield $table->refresh();
+            }
+        );
     }
 
     /**
@@ -336,16 +399,21 @@ EOT
      *
      * @throws \Throwable
      */
-    public function updateWithoutPrimaryKey(): \Generator
+    public function updateWithoutPrimaryKey(): void
     {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('In the parameters of the entity must be specified element with the index "id" (primary key)');
+        Loop::run(
+            function (): \Generator
+            {
+                $this->expectException(\LogicException::class);
+                $this->expectExceptionMessage('In the parameters of the entity must be specified element with the index "id" (primary key)');
 
-        /** @var TestTable $table */
-        $table = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
+                /** @var TestTable $table */
+                $table = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
 
-        $table->id = null;
+                $table->id = null;
 
-        yield $table->save();
+                yield $table->save();
+            }
+        );
     }
 }

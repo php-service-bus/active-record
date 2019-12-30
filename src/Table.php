@@ -113,7 +113,7 @@ abstract class Table
     final public static function new(QueryExecutor $queryExecutor, array $data): Promise
     {
         return call(
-            static function (array $data) use ($queryExecutor): \Generator
+            static function () use ($data, $queryExecutor): \Generator
             {
                 /**
                  * @psalm-var array<string, string|int|float|null> $data
@@ -128,8 +128,7 @@ abstract class Table
                 $self->insertId = (string) $result;
 
                 return $self;
-            },
-            $data
+            }
         );
     }
 
@@ -166,7 +165,7 @@ abstract class Table
     final public static function findOneBy(QueryExecutor $queryExecutor, array $criteria): Promise
     {
         return call(
-            static function (QueryExecutor $queryExecutor, array $criteria): \Generator
+            static function () use ($queryExecutor, $criteria): \Generator
             {
                 /**
                  * @var \Latitude\QueryBuilder\CriteriaInterface[] $criteria
@@ -187,9 +186,7 @@ abstract class Table
                 {
                     return yield from self::create($queryExecutor, $data, false);
                 }
-            },
-            $queryExecutor,
-            $criteria
+            }
         );
     }
 
@@ -215,7 +212,7 @@ abstract class Table
         array $orderBy = []
     ): Promise {
         return call(
-            static function (QueryExecutor $queryExecutor, array $criteria, ?int $limit, array $orderBy): \Generator
+            static function () use ($queryExecutor, $criteria, $limit, $orderBy): \Generator
             {
                 /**
                  * @var \Latitude\QueryBuilder\CriteriaInterface[] $criteria
@@ -250,11 +247,7 @@ abstract class Table
                 }
 
                 return $result;
-            },
-            $queryExecutor,
-            $criteria,
-            $limit,
-            $orderBy
+            }
         );
     }
 
@@ -271,10 +264,10 @@ abstract class Table
     final public function save(): Promise
     {
         return call(
-            function (bool $isNew): \Generator
+            function (): \Generator
             {
                 /** Store new entry */
-                if ($isNew === true)
+                if ($this->isNew === true)
                 {
                     $this->changes = [];
 
@@ -297,8 +290,7 @@ abstract class Table
                 $this->changes = [];
 
                 return $affectedRows;
-            },
-            $this->isNew
+            }
         );
     }
 
