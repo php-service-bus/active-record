@@ -46,6 +46,8 @@ final class MetadataLoader
      *    ...
      * ]
      *
+     * @return Promise<array<string, string>>
+     *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      */
@@ -56,7 +58,11 @@ final class MetadataLoader
             {
                 $cacheKey = \sha1($table . '_metadata_columns');
 
-                /** @var array|null $columns */
+                /**
+                 * @psalm-var array<string, string>|null $columns
+                 *
+                 * @var array|null $columns
+                 */
                 $columns = yield $this->cacheAdapter->get($cacheKey);
 
                 if ($columns !== null)
@@ -65,9 +71,9 @@ final class MetadataLoader
                 }
 
                 /**
-                 * @psalm-var      array<string, string>|null $columns
+                 * @psalm-var array<string, string> $columns
                  *
-                 * @var array|null $columns
+                 * @var array $columns
                  */
                 $columns = yield from $this->loadColumns($table);
 
@@ -80,6 +86,10 @@ final class MetadataLoader
     }
 
     /**
+     * @return \Generator<array<string, string>>
+     *
+     * @psalm-suppress InvalidReturnType
+     *
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
      * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
@@ -89,7 +99,6 @@ final class MetadataLoader
      */
     private function loadColumns(string $table): \Generator
     {
-        /** @psalm-var array<string, string> $result */
         $result = [];
 
         $queryBuilder = selectQuery('information_schema.columns', 'column_name', 'data_type')
@@ -105,16 +114,15 @@ final class MetadataLoader
         $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
 
         /**
-         * @psalm-var      array<int, array<string, string>> $columns
+         * @psalm-var array<array-key, array{column_name:string, data_type:string}> $columns
          *
          * @var array $columns
          */
         $columns = yield fetchAll($resultSet);
 
-        /** @psalm-var array{column_name:string, data_type:string} $columnData */
         foreach ($columns as $columnData)
         {
-            $result[$columnData['column_name']] = $columnData['data_type'];
+            $result[(string) $columnData['column_name']] = (string) $columnData['data_type'];
         }
 
         return $result;
