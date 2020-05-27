@@ -1,8 +1,7 @@
 language: php
 
 php:
-  - 7.3
-  - 7.4snapshot
+  - 7.4
 
 addons:
   postgresql: "9.5"
@@ -21,7 +20,7 @@ before_script:
 
 install:
   - travis_retry composer install --no-interaction --no-suggest
-
+  -
 script:
   - ./vendor/bin/phpunit --configuration ./phpunit.xml --coverage-clover=coverage.clover
   - if [ $TRAVIS_PHP_VERSION = "7.4" ]; then ./vendor/bin/psalm --config=psalm.xml; fi
@@ -31,4 +30,3 @@ script:
 after_script:
   - if [ $TRAVIS_PHP_VERSION = "7.4" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
   - if [ $TRAVIS_PHP_VERSION = "7.4" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
-
