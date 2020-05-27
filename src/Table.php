@@ -102,9 +102,9 @@ abstract class Table
     /**
      * Create and persist entry.
      *
-     * Returns \ServiceBus\Storage\ActiveRecord\Table
+     * @psalm-param array<string, float|int|string|null> $data
      *
-     * @psalm-param    array<string, float|int|string|null> $data
+     * @return Promise<\ServiceBus\Storage\ActiveRecord\Table>
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UnknownColumn
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
@@ -115,19 +115,15 @@ abstract class Table
         return call(
             static function () use ($data, $queryExecutor): \Generator
             {
-                /**
-                 * @psalm-var array<string, string|int|float|null> $data
-                 *
-                 * @var static $self
-                 */
-                $self = yield from static::create($queryExecutor, $data, true);
+                /** @var Table $entity */
+                $entity = yield from static::create($queryExecutor, $data, true);
 
                 /** @var int|string $result */
-                $result = yield $self->save();
+                $result = yield $entity->save();
 
-                $self->insertId = (string) $result;
+                $entity->insertId = (string) $result;
 
-                return $self;
+                return $entity;
             }
         );
     }
@@ -135,9 +131,9 @@ abstract class Table
     /**
      * Find entry by primary key.
      *
-     * Returns static|null
-     *
      * @param int|string $id
+     *
+     * @return Promise<static|null>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
@@ -153,9 +149,9 @@ abstract class Table
     /**
      * Find one entry by specified criteria.
      *
-     * Returns static|null
+     * @psalm-param array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
      *
-     * @psalm-param    array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
+     * @return Promise<static|null>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
@@ -167,24 +163,20 @@ abstract class Table
         return call(
             static function () use ($queryExecutor, $criteria): \Generator
             {
-                /**
-                 * @var \Latitude\QueryBuilder\CriteriaInterface[] $criteria
-                 * @var \ServiceBus\Storage\Common\ResultSet       $resultSet
-                 */
+                /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
                 $resultSet = yield find($queryExecutor, static::tableName(), $criteria);
 
-                /**
-                 * @psalm-var array<string, string|int|float|null>|null $data
-                 *
-                 * @var array $data
-                 */
+                /** @psalm-var array<string, string|int|float|null>|null $data */
                 $data = yield fetchOne($resultSet);
 
                 unset($resultSet);
 
                 if (\is_array($data) === true)
                 {
-                    return yield from self::create($queryExecutor, $data, false);
+                    /** @var static $entry */
+                    $entry = yield from self::create($queryExecutor, $data, false);
+
+                    return $entry;
                 }
             }
         );
@@ -193,13 +185,12 @@ abstract class Table
     /**
      * Find entries by specified criteria.
      *
-     * Returns array<int, static>
-     *
      * @psalm-param  array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
      * @psalm-param  array<string, string>                      $orderBy
-     * @psalm-return \Amp\Promise
      *
      * @param \Latitude\QueryBuilder\CriteriaInterface[] $criteria
+     *
+     * @return Promise<list<static>>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
@@ -214,31 +205,21 @@ abstract class Table
         return call(
             static function () use ($queryExecutor, $criteria, $limit, $orderBy): \Generator
             {
-                /**
-                 * @var \Latitude\QueryBuilder\CriteriaInterface[] $criteria
-                 * @var \ServiceBus\Storage\Common\ResultSet       $resultSet
-                 * @var array<string, string>                      $orderBy
-                 */
+                /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
                 $resultSet = yield find($queryExecutor, static::tableName(), $criteria, $limit, $orderBy);
 
-                /** @var array<string, float|int|string|null>|null $rows */
+                /** @var array<string, array<string, string|int|float|null>>|null $rows */
                 $rows = yield fetchAll($resultSet);
 
                 unset($resultSet);
 
-                /** @var array<int, static> $result */
                 $result = [];
 
                 if ($rows !== null)
                 {
-                    /**
-                     * @psalm-var array<string, string|int|float|null> $row
-                     *
-                     * @var array $row
-                     */
                     foreach ($rows as $row)
                     {
-                        /** @var static $entry */
+                        /** @var Table $entry */
                         $entry    = yield from self::create($queryExecutor, $row, false);
                         $result[] = $entry;
 
@@ -255,6 +236,8 @@ abstract class Table
      * Save entry changes.
      *
      * Returns the ID of the saved entry, or the number of affected rows (in the case of an update)
+     *
+     * @return Promise<int|string>
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
@@ -297,6 +280,8 @@ abstract class Table
     /**
      * Refresh entry data.
      *
+     * @return Promise<void>
+     *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UpdateRemovedEntry Unable to find an entry (possibly RC
      *                                                                        occured)
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
@@ -304,7 +289,6 @@ abstract class Table
      */
     public function refresh(): Promise
     {
-        /** @psalm-suppress MixedTypeCoercion */
         return call(
             function (): \Generator
             {
@@ -328,7 +312,7 @@ abstract class Table
                 {
                     $this->changes = [];
 
-                    /** @var array $parameters */
+                    /** @psalm-var array<string, string|int|null|float> $parameters */
                     $parameters = unescapeBinary($this->queryExecutor, $row);
 
                     $this->data = $parameters;
@@ -344,6 +328,8 @@ abstract class Table
     /**
      * Delete entry.
      *
+     * @return Promise<int>
+     *
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
@@ -356,7 +342,7 @@ abstract class Table
     {
         if ($this->isNew === true)
         {
-            return new Success();
+            return new Success(0);
         }
 
         return remove(
@@ -437,6 +423,8 @@ abstract class Table
      *
      * @psalm-param    array<string, string|int|float|null> $changeSet
      *
+     * @return \Generator<string>
+     *
      * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed
      * @throws \ServiceBus\Storage\Common\Exceptions\UniqueConstraintViolationCheckFailed
@@ -475,14 +463,14 @@ abstract class Table
          */
         $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
 
-        /** @var string $insertedEntryId */
+        /** @var int|string|null $insertedEntryId */
         $insertedEntryId = yield $resultSet->lastInsertId();
 
         unset($queryBuilder, $compiledQuery, $resultSet);
 
         if (isset($this->data[$primaryKey]) === false)
         {
-            $this->data[$primaryKey] = $insertedEntryId;
+            $this->data[$primaryKey] = (string) $insertedEntryId; // it cant be null
         }
 
         return $insertedEntryId;
@@ -494,6 +482,8 @@ abstract class Table
      * @psalm-suppress InvalidReturnType
      *
      * @psalm-param    array<string, string|int|float|null> $changeSet
+     *
+     * @return \Generator<int>
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
      * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
@@ -548,9 +538,11 @@ abstract class Table
     /**
      * Create entry.
      *
-     * @psalm-suppress InvalidReturnType
+     * @psalm-suppress MoreSpecificReturnType
      *
      * @psalm-param    array<string, string|int|float|null> $data
+     *
+     * @return \Generator<static>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
@@ -561,7 +553,11 @@ abstract class Table
 
         $self = new static($queryExecutor);
 
-        /** @psalm-var array<string, string> $columns */
+        /**
+         * @psalm-var array<string, string> $columns
+         *
+         * @var array $columns
+         */
         $columns = yield $metadataExtractor->columns(static::tableName());
 
         $self->columns = $columns;

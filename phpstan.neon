@@ -1,5 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#Latitude\\QueryBuilder\\Query\\InsertQuery::returning#'
-			path: %currentWorkingDirectory%/src/Table.php
+			message: '#Unable to resolve the template type#'
+			path: %currentWorkingDirectory%/src
+		-
+			message: '#Generator expects value type#'
+			path: %currentWorkingDirectory%/src
+		-
+			message: '#Unsafe usage of new static#'
+			path: %currentWorkingDirectory%/src
