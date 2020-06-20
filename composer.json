@@ -35,16 +35,13 @@
   "require": {
     "php": ">=7.4",
     "ext-pgsql": "*",
-    "php-service-bus/common": "v4.1.*",
-    "php-service-bus/cache": "v4.1.*",
-    "php-service-bus/storage-sql": "v4.1.*"
+    "php-service-bus/storage": "v4.1.*"
   },
   "require-dev": {
     "php-service-bus/code-style-config": "v1.2.*",
     "phpunit/phpunit": "v9.1.*",
     "vimeo/psalm": "v3.11.*",
-    "phpstan/phpstan": "v0.12.*",
-    "doctrine/dbal": "v2.10.*"
+    "phpstan/phpstan": "v0.12.*"
   },
   "prefer-stable": true,
   "minimum-stability": "stable",
