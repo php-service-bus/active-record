@@ -171,7 +171,7 @@ abstract class Table
 
                 unset($resultSet);
 
-                if (\is_array($data) === true)
+                if (\is_array($data))
                 {
                     /** @var static $entry */
                     $entry = yield from self::create($queryExecutor, $data, false);
@@ -308,7 +308,7 @@ abstract class Table
 
                 unset($resultSet);
 
-                if (\is_array($row) === true)
+                if (\is_array($row))
                 {
                     $this->changes = [];
 
@@ -384,7 +384,7 @@ abstract class Table
      */
     final public function __set(string $name, $value): void
     {
-        if (isset($this->columns[$name]) === true)
+        if (isset($this->columns[$name]))
         {
             $this->data[$name]    = $value;
             $this->changes[$name] = $value;
@@ -447,12 +447,14 @@ abstract class Table
         if ($this->queryExecutor instanceof AmpPostgreSQLAdapter)
         {
             /**
-             * @psalm-suppress UndefinedMethod Cannot find method in traits
+             * @psalm-suppress UndefinedDocblockClass Cannot find method in traits
              *
              * @var \Latitude\QueryBuilder\Query\Postgres\InsertQuery $queryBuilder
              */
             $queryBuilder->returning($primaryKey);
         }
+
+        /** @var \Latitude\QueryBuilder\Query\AbstractQuery $queryBuilder */
 
         $compiledQuery = $queryBuilder->compile();
 
@@ -527,7 +529,7 @@ abstract class Table
     {
         $primaryKey = static::primaryKey();
 
-        if (isset($this->data[$primaryKey]) === true && (string) $this->data[$primaryKey] !== '')
+        if (isset($this->data[$primaryKey]) && (string) $this->data[$primaryKey] !== '')
         {
             return (string) $this->data[$primaryKey];
         }
