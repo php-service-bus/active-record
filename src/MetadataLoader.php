@@ -3,7 +3,7 @@
 /**
  * Active record implementation.
  *
- * @author  Maksim Masiukevich <dev@async-php.com>
+ * @author  Maksim Masiukevich <contacts@desperado.dev>
  * @license MIT
  * @license https://opensource.org/licenses/MIT
  */
@@ -26,10 +26,14 @@ use ServiceBus\Storage\Common\QueryExecutor;
  */
 final class MetadataLoader
 {
-    /** @var QueryExecutor */
+    /**
+     * @var QueryExecutor
+     */
     private $queryExecutor;
 
-    /** @var CacheAdapter */
+    /**
+     * @var CacheAdapter
+     */
     private $cacheAdapter;
 
     public function __construct(QueryExecutor $queryExecutor, ?CacheAdapter $cacheAdapter = null)
@@ -54,7 +58,7 @@ final class MetadataLoader
     public function columns(string $table): Promise
     {
         return call(
-            function (string $table): \Generator
+            function () use ($table): \Generator
             {
                 $cacheKey = \sha1($table . '_metadata_columns');
 
@@ -80,8 +84,7 @@ final class MetadataLoader
                 yield $this->cacheAdapter->save($cacheKey, $columns);
 
                 return $columns;
-            },
-            $table
+            }
         );
     }
 
@@ -107,7 +110,7 @@ final class MetadataLoader
         $compiledQuery = $queryBuilder->compile();
 
         /**
-         * @psalm-suppress MixedTypeCoercion Invalid params() docblock
+         * @psalm-suppress MixedArgumentTypeCoercion Invalid params() docblock
          *
          * @var \ServiceBus\Storage\Common\ResultSet $resultSet
          */
@@ -115,14 +118,12 @@ final class MetadataLoader
 
         /**
          * @psalm-var array<array-key, array{column_name:string, data_type:string}> $columns
-         *
-         * @var array $columns
          */
         $columns = yield fetchAll($resultSet);
 
         foreach ($columns as $columnData)
         {
-            $result[(string) $columnData['column_name']] = (string) $columnData['data_type'];
+            $result[$columnData['column_name']] = $columnData['data_type'];
         }
 
         return $result;

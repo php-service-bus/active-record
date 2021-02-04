@@ -3,7 +3,7 @@
 /**
  * Active record implementation.
  *
- * @author  Maksim Masiukevich <dev@async-php.com>
+ * @author  Maksim Masiukevich <contacts@desperado.dev>
  * @license MIT
  * @license https://opensource.org/licenses/MIT
  */
@@ -95,7 +95,7 @@ EOT
     {
         $testTable = yield TestTable::find($this->adapter, uuid());
 
-        static::assertNull($testTable);
+        self::assertNull($testTable);
     }
 
     /**
@@ -118,14 +118,14 @@ EOT
 
                 $id = $testTable->lastInsertId();
 
-                static::assertSame($expectedId, $id);
+                self::assertSame($expectedId, $id);
 
                 /** @var TestTable $testTable */
                 $testTable = yield TestTable::find($this->adapter, $id);
 
-                static::assertNotNull($testTable);
-                static::assertSame('first', $testTable->first_value);
-                static::assertSame('second', $testTable->second_value);
+                self::assertNotNull($testTable);
+                self::assertSame('first', $testTable->first_value);
+                self::assertSame('second', $testTable->second_value);
             }
         );
     }
@@ -155,7 +155,7 @@ EOT
 
                 $testTable = yield TestTable::find($this->adapter, $id);
 
-                static::assertSame('qwerty', $testTable->first_value);
+                self::assertSame('qwerty', $testTable->first_value);
             }
         );
     }
@@ -195,8 +195,8 @@ EOT
 
                 yield $testTable->save();
 
-                static::assertSame($id, $testTable->lastInsertId());
-                static::assertSame(0, yield $testTable->save());
+                self::assertSame($id, $testTable->lastInsertId());
+                self::assertSame(0, yield $testTable->save());
             }
         );
     }
@@ -233,7 +233,7 @@ EOT
                 /** @var TestTable[] $result */
                 $result = yield TestTable::findBy($this->adapter, [], 3);
 
-                static::assertCount(3, $result);
+                self::assertCount(3, $result);
             }
         );
     }
@@ -257,7 +257,7 @@ EOT
                 /** @var TestTable[] $result */
                 $result = yield TestTable::findBy($this->adapter);
 
-                static::assertCount(0, $result);
+                self::assertCount(0, $result);
             }
         );
     }
@@ -316,12 +316,11 @@ EOT
                 /** @var SecondTestTable[] $tables */
                 $tables = yield SecondTestTable::findBy($this->adapter);
 
-                static::assertCount(1, $tables);
+                self::assertCount(1, $tables);
 
-                /** @var SecondTestTable $table */
                 $table = \reset($tables);
 
-                static::assertSame('root', $table->title);
+                self::assertSame('root', $table->title);
             }
         );
     }
@@ -339,13 +338,13 @@ EOT
                 /** @var SecondTestTable $table */
                 $table = yield SecondTestTable::new($this->adapter, ['title' => 'root']);
 
-                static::assertTrue(isset($table->pk));
+                self::assertTrue(isset($table->pk));
 
                 $table->title = 'qwerty';
 
                 yield $table->refresh();
 
-                static::assertSame('root', $table->title);
+                self::assertSame('root', $table->title);
             }
         );
     }
@@ -367,7 +366,7 @@ EOT
                 /** @var TestTable[] $collection */
                 $collection = yield TestTable::findBy($this->adapter, [], 50, ['first_value' => 'desc']);
 
-                static::assertCount(3, $collection);
+                self::assertCount(3, $collection);
             }
         );
     }

@@ -3,7 +3,7 @@
 /**
  * Active record implementation.
  *
- * @author  Maksim Masiukevich <dev@async-php.com>
+ * @author  Maksim Masiukevich <contacts@desperado.dev>
  * @license MIT
  * @license https://opensource.org/licenses/MIT
  */
@@ -42,7 +42,7 @@ abstract class Table
      *
      * @var string|null
      */
-    private $insertId = null;
+    private $insertId;
 
     /** @var QueryExecutor */
     private $queryExecutor;
@@ -131,8 +131,6 @@ abstract class Table
     /**
      * Find entry by primary key.
      *
-     * @param int|string $id
-     *
      * @return Promise<static|null>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
@@ -141,7 +139,7 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      */
-    final public static function find(QueryExecutor $queryExecutor, $id): Promise
+    final public static function find(QueryExecutor $queryExecutor, int|string $id): Promise
     {
         return self::findOneBy($queryExecutor, [equalsCriteria(static::primaryKey(), $id)]);
     }
@@ -283,7 +281,7 @@ abstract class Table
      * @return Promise<void>
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UpdateRemovedEntry Unable to find an entry (possibly RC
-     *                                                                        occured)
+     *                                                                        occurred)
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      */
@@ -376,13 +374,11 @@ abstract class Table
     }
 
     /**
-     * @param float|int|string|null $value
-     *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UnknownColumn
      *
      * @return void
      */
-    final public function __set(string $name, $value): void
+    final public function __set(string $name, float|int|string|null $value): void
     {
         if (isset($this->columns[$name]))
         {
@@ -403,7 +399,7 @@ abstract class Table
     /**
      * @return float|int|string|null
      */
-    final public function __get(string $name)
+    final public function __get(string $name): float|int|string|null
     {
         return $this->data[$name];
     }
@@ -447,19 +443,15 @@ abstract class Table
         if ($this->queryExecutor instanceof AmpPostgreSQLAdapter)
         {
             /**
-             * @psalm-suppress UndefinedDocblockClass Cannot find method in traits
-             *
              * @var \Latitude\QueryBuilder\Query\Postgres\InsertQuery $queryBuilder
              */
             $queryBuilder->returning($primaryKey);
         }
 
-        /** @var \Latitude\QueryBuilder\Query\AbstractQuery $queryBuilder */
-
         $compiledQuery = $queryBuilder->compile();
 
         /**
-         * @psalm-suppress MixedTypeCoercion Invalid params() docblock
+         * @psalm-suppress MixedArgumentTypeCoercion Invalid params() docblock
          *
          * @var \ServiceBus\Storage\Common\ResultSet $resultSet
          */
@@ -508,7 +500,7 @@ abstract class Table
         );
 
         /**
-         * @psalm-suppress MixedTypeCoercion Invalid params() docblock
+         * @psalm-suppress MixedArgumentTypeCoercion Invalid params() docblock
          *
          * @var \ServiceBus\Storage\Common\ResultSet $resultSet
          */
@@ -589,7 +581,7 @@ abstract class Table
     /**
      * @param QueryExecutor $queryExecutor
      */
-    private function __construct(QueryExecutor $queryExecutor)
+    final private function __construct(QueryExecutor $queryExecutor)
     {
         $this->queryExecutor = $queryExecutor;
     }

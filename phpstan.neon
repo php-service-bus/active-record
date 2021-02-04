@@ -1,11 +1,10 @@
 parameters:
+	checkMissingIterableValueType: false
+	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
-		-
-			message: '#Unable to resolve the template type#'
-			path: %currentWorkingDirectory%/src
 		-
 			message: '#Generator expects value type#'
 			path: %currentWorkingDirectory%/src
 		-
-			message: '#Unsafe usage of new static#'
+			message: '#but return statement is missing#'
 			path: %currentWorkingDirectory%/src

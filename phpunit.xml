@@ -1,45 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php"
-         backupGlobals="false"
-         backupStaticAttributes="false"
-         beStrictAboutTestsThatDoNotTestAnything="false"
-         colors="true"
-         verbose="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         failOnRisky="true"
-         failOnWarning="true"
-         stopOnFailure="false">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/autoload.php" backupGlobals="false"
+         backupStaticAttributes="false" beStrictAboutTestsThatDoNotTestAnything="false" colors="true" verbose="true"
+         convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true"
+         failOnRisky="true" failOnWarning="true" stopOnFailure="false"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+    <coverage>
+        <include>
+            <directory>./src</directory>
+        </include>
+        <exclude>
+            <directory>./tests</directory>
+        </exclude>
+    </coverage>
     <php>
         <ini name="error_reporting" value="-1"/>
         <env name="TEST_POSTGRES_DSN" value="pgsql://postgres:123456789@localhost:5432/test"/>
-        <env name="DATABASE_CONNECTION_DSN" value="sqlite:///:memory:"/>
     </php>
-
     <testsuites>
-
-        <testsuite name="Common storage parts">
-            <directory>./vendor/php-service-bus/storage-common/tests</directory>
-        </testsuite>
-
-        <testsuite name="Cache implementation">
-            <directory>./vendor/php-service-bus/cache/tests</directory>
-        </testsuite>
-
-        <testsuite name="SQL databases adapters implementation">
+        <testsuite name="Common component">
             <directory>./tests/</directory>
         </testsuite>
-
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>./</directory>
-            <exclude>
-                <directory>./tests</directory>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
 </phpunit>
