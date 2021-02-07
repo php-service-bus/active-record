@@ -20,17 +20,11 @@ use ServiceBus\Storage\ActiveRecord\Table;
  */
 final class SecondTestTable extends Table
 {
-    /**
-     * {@inheritdoc}
-     */
     protected static function tableName(): string
     {
         return 'second_test_table';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected static function primaryKey(): string
     {
         return 'pk';

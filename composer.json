@@ -26,13 +26,18 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "ServiceBus\\Storage\\ActiveRecord\\Tests\\": "tests/"
+      "ServiceBus\\Storage\\ActiveRecord\\Tests\\": "tests/",
+      "ServiceBus\\Storage\\Tests\\": "vendor/php-service-bus/storage/tests/",
+      "ServiceBus\\Cache\\Tests\\": "vendor/php-service-bus/cache/tests/",
+      "ServiceBus\\Common\\Tests\\": "vendor/php-service-bus/common/tests/"
     }
   },
   "require": {
     "php": ">=8.0",
     "ext-pgsql": "*",
-    "php-service-bus/storage": "v5.0.*"
+    "php-service-bus/storage": "v5.0.*",
+    "php-service-bus/common": "v5.0.*",
+    "php-service-bus/cache": "v5.0.*"
   },
   "require-dev": {
     "php-service-bus/code-style-config": "v1.3.*",

@@ -21,9 +21,6 @@ use ServiceBus\Storage\ActiveRecord\Table;
  */
 final class TestTable extends Table
 {
-    /**
-     * {@inheritdoc}
-     */
     protected static function tableName(): string
     {
         return 'test_table';

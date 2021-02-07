@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnhandledExceptionInspection */
 
 /**
  * Active record implementation.
@@ -28,14 +28,11 @@ use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
  */
 final class TableTest extends TestCase
 {
-    /** @var AmpPostgreSQLAdapter */
+    /**
+     * @var AmpPostgreSQLAdapter
+     */
     private $adapter;
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws \Throwable
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -70,11 +67,6 @@ EOT
         wait($promise);
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws \Throwable
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -88,8 +80,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function findNonExistent(): \Generator
     {
@@ -100,8 +90,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function storeNew(): void
     {
@@ -132,8 +120,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function updateStored(): void
     {
@@ -162,8 +148,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function deleteUnStored(): void
     {
@@ -180,8 +164,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function updateWithNoChanges(): void
     {
@@ -203,8 +185,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function findCollection(): void
     {
@@ -240,8 +220,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function successRemove(): void
     {
@@ -264,8 +242,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function saveWithNoPrimaryKey(): void
     {
@@ -282,8 +258,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function unExistsProperty(): void
     {
@@ -300,8 +274,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function saveWithSerialPrimaryKey(): void
     {
@@ -327,8 +299,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function refresh(): void
     {
@@ -351,8 +321,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function selectWithOrder(): void
     {
@@ -373,8 +341,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function refreshWithDeletedEntry(): void
     {
@@ -395,8 +361,6 @@ EOT
 
     /**
      * @test
-     *
-     * @throws \Throwable
      */
     public function updateWithoutPrimaryKey(): void
     {
