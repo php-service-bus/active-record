@@ -44,7 +44,9 @@ abstract class Table
      */
     private $insertId;
 
-    /** @var QueryExecutor */
+    /**
+     * @var QueryExecutor
+     */
     private $queryExecutor;
 
     /**
