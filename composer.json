@@ -42,7 +42,7 @@
   "require-dev": {
     "php-service-bus/code-style-config": "v1.3.*",
     "phpunit/phpunit": "v9.5.*",
-    "vimeo/psalm": "v4.5.*",
+    "vimeo/psalm": "v4.6.*",
     "phpstan/phpstan": "v0.12.*"
   },
   "prefer-stable": true,
