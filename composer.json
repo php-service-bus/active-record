@@ -35,7 +35,7 @@
   "require": {
     "php": ">=8.1",
     "ext-pgsql": "*",
-    "php-service-bus/storage": "v5.1.x-dev",
+    "php-service-bus/storage": "v5.1.*",
     "php-service-bus/common": "v5.1.*",
     "php-service-bus/cache": "v5.1.*"
   },
@@ -47,7 +47,7 @@
     "boesing/psalm-plugin-stringf": "v1.1.*"
   },
   "prefer-stable": true,
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "scripts": {
     "psalm": "rm -rf ~/.cache/psalm/ && ./vendor/bin/psalm --config=psalm.xml",
     "phpstan": "./vendor/bin/phpstan analyse src --level 9",
