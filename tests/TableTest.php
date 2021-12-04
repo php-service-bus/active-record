@@ -23,7 +23,7 @@ use ServiceBus\Storage\ActiveRecord\Tests\Stubs\TestTable;
 use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
 use function Amp\Promise\wait;
 use function ServiceBus\Common\uuid;
-use function ServiceBus\Storage\Sql\DoctrineDBAL\inMemoryAdapter;
+use function ServiceBus\Storage\Sql\AmpPosgreSQL\postgreSqlAdapterFactory;
 
 final class TableTest extends TestCase
 {
@@ -38,7 +38,7 @@ final class TableTest extends TestCase
 
         InMemoryStorage::instance()->reset();
 
-        $this->adapter = inMemoryAdapter();
+        $this->adapter = postgreSqlAdapterFactory(\getenv('TEST_POSTGRES_DSN'));
 
         $promise = $this->adapter->execute(
             <<<EOT
@@ -168,6 +168,8 @@ EOT
 
                 yield $testTable->remove();
 
+                self::assertTrue(true);
+
                 Loop::stop();
             }
         );
@@ -272,6 +274,8 @@ EOT
                 $testTable = yield TestTable::new($this->adapter, ['first_value' => 'first', 'second_value' => 'second']);
 
                 yield $testTable->save();
+
+                self::assertTrue(true);
 
                 Loop::stop();
             }
