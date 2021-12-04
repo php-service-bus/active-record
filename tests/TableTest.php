@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpUnhandledExceptionInspection */
+<?php
+
+/** @noinspection PhpUnhandledExceptionInspection */
 
 /**
  * Active record implementation.
@@ -8,24 +10,21 @@
  * @license https://opensource.org/licenses/MIT
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace ServiceBus\Storage\ActiveRecord\Tests;
 
 use Amp\Loop;
-use function Amp\Promise\wait;
-use function ServiceBus\Common\uuid;
-use function ServiceBus\Storage\Sql\AmpPosgreSQL\postgreSqlAdapterFactory;
 use Amp\Promise;
 use PHPUnit\Framework\TestCase;
 use ServiceBus\Cache\InMemory\InMemoryStorage;
 use ServiceBus\Storage\ActiveRecord\Tests\Stubs\SecondTestTable;
 use ServiceBus\Storage\ActiveRecord\Tests\Stubs\TestTable;
 use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
+use function Amp\Promise\wait;
+use function ServiceBus\Common\uuid;
+use function ServiceBus\Storage\Sql\DoctrineDBAL\inMemoryAdapter;
 
-/**
- *
- */
 final class TableTest extends TestCase
 {
     /**
@@ -39,7 +38,7 @@ final class TableTest extends TestCase
 
         InMemoryStorage::instance()->reset();
 
-        $this->adapter = postgreSqlAdapterFactory((string) \getenv('TEST_POSTGRES_DSN'));
+        $this->adapter = inMemoryAdapter();
 
         $promise = $this->adapter->execute(
             <<<EOT
@@ -81,9 +80,9 @@ EOT
     /**
      * @test
      */
-    public function findNonExistent(): \Generator
+    public function findNonExistent(): void
     {
-        $testTable = yield TestTable::find($this->adapter, uuid());
+        $testTable = wait(TestTable::find($this->adapter, uuid()));
 
         self::assertNull($testTable);
     }
@@ -114,6 +113,8 @@ EOT
                 self::assertNotNull($testTable);
                 self::assertSame('first', $testTable->first_value);
                 self::assertSame('second', $testTable->second_value);
+
+                Loop::stop();
             }
         );
     }
@@ -129,7 +130,10 @@ EOT
                 $id = uuid();
 
                 /** @var TestTable $testTable */
-                $testTable = yield TestTable::new($this->adapter, ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']);
+                $testTable = yield TestTable::new(
+                    $this->adapter,
+                    ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']
+                );
 
                 yield $testTable->save();
 
@@ -142,6 +146,8 @@ EOT
                 $testTable = yield TestTable::find($this->adapter, $id);
 
                 self::assertSame('qwerty', $testTable->first_value);
+
+                Loop::stop();
             }
         );
     }
@@ -155,9 +161,14 @@ EOT
             function (): \Generator
             {
                 /** @var TestTable $testTable */
-                $testTable = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => 'first', 'second_value' => 'second']);
+                $testTable = yield TestTable::new(
+                    $this->adapter,
+                    ['id' => uuid(), 'first_value' => 'first', 'second_value' => 'second']
+                );
 
                 yield $testTable->remove();
+
+                Loop::stop();
             }
         );
     }
@@ -173,12 +184,17 @@ EOT
                 $id = uuid();
 
                 /** @var TestTable $testTable */
-                $testTable = yield TestTable::new($this->adapter, ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']);
+                $testTable = yield TestTable::new(
+                    $this->adapter,
+                    ['id' => $id, 'first_value' => 'first', 'second_value' => 'second']
+                );
 
                 yield $testTable->save();
 
                 self::assertSame($id, $testTable->lastInsertId());
                 self::assertSame(0, yield $testTable->save());
+
+                Loop::stop();
             }
         );
     }
@@ -214,6 +230,8 @@ EOT
                 $result = yield TestTable::findBy($this->adapter, [], 3);
 
                 self::assertCount(3, $result);
+
+                Loop::stop();
             }
         );
     }
@@ -236,6 +254,8 @@ EOT
                 $result = yield TestTable::findBy($this->adapter);
 
                 self::assertCount(0, $result);
+
+                Loop::stop();
             }
         );
     }
@@ -252,6 +272,8 @@ EOT
                 $testTable = yield TestTable::new($this->adapter, ['first_value' => 'first', 'second_value' => 'second']);
 
                 yield $testTable->save();
+
+                Loop::stop();
             }
         );
     }
@@ -268,6 +290,8 @@ EOT
                 $this->expectExceptionMessage('Column "qqqq" does not exist in table "test_table"');
 
                 yield TestTable::new($this->adapter, ['qqqq' => '111']);
+
+                Loop::stop();
             }
         );
     }
@@ -293,6 +317,8 @@ EOT
                 $table = \reset($tables);
 
                 self::assertSame('root', $table->title);
+
+                Loop::stop();
             }
         );
     }
@@ -315,6 +341,8 @@ EOT
                 yield $table->refresh();
 
                 self::assertSame('root', $table->title);
+
+                Loop::stop();
             }
         );
     }
@@ -332,9 +360,16 @@ EOT
                 yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '3', 'second_value' => '1']);
 
                 /** @var TestTable[] $collection */
-                $collection = yield TestTable::findBy($this->adapter, [], 50, ['first_value' => 'desc']);
+                $collection = yield TestTable::findBy(
+                    queryExecutor: $this->adapter,
+                    criteria: [],
+                    limit: 50,
+                    orderBy: ['first_value' => 'desc']
+                );
 
                 self::assertCount(3, $collection);
+
+                Loop::stop();
             }
         );
     }
@@ -351,10 +386,15 @@ EOT
                 $this->expectExceptionMessage('Failed to update entity: data has been deleted');
 
                 /** @var TestTable $table */
-                $table = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
+                $table = yield TestTable::new(
+                    $this->adapter,
+                    ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']
+                );
 
                 yield $table->remove();
                 yield $table->refresh();
+
+                Loop::stop();
             }
         );
     }
@@ -364,18 +404,23 @@ EOT
      */
     public function updateWithoutPrimaryKey(): void
     {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            'In the parameters of the entity must be specified element with the index "id" (primary key)'
+        )
+        ;
+
         Loop::run(
             function (): \Generator
             {
-                $this->expectException(\LogicException::class);
-                $this->expectExceptionMessage('In the parameters of the entity must be specified element with the index "id" (primary key)');
-
                 /** @var TestTable $table */
                 $table = yield TestTable::new($this->adapter, ['id' => uuid(), 'first_value' => '1', 'second_value' => '3']);
 
                 $table->id = null;
 
                 yield $table->save();
+
+                Loop::stop();
             }
         );
     }

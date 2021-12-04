@@ -8,13 +8,10 @@
  * @license https://opensource.org/licenses/MIT
  */
 
-declare(strict_types = 0);
+declare(strict_types=0);
 
 namespace ServiceBus\Storage\ActiveRecord\Exceptions;
 
-/**
- *
- */
 final class UnknownColumn extends \InvalidArgumentException
 {
     public function __construct(string $column, string $table)

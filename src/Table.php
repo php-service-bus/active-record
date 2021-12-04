@@ -8,10 +8,17 @@
  * @license https://opensource.org/licenses/MIT
  */
 
-declare(strict_types = 0);
+declare(strict_types=0);
 
 namespace ServiceBus\Storage\ActiveRecord;
 
+use Amp\Promise;
+use Amp\Success;
+use ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified;
+use ServiceBus\Storage\ActiveRecord\Exceptions\UnknownColumn;
+use ServiceBus\Storage\ActiveRecord\Exceptions\UpdateRemovedEntry;
+use ServiceBus\Storage\Common\QueryExecutor;
+use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
 use function Amp\call;
 use function ServiceBus\Common\uuid;
 use function ServiceBus\Storage\Sql\buildQuery;
@@ -23,22 +30,19 @@ use function ServiceBus\Storage\Sql\insertQuery;
 use function ServiceBus\Storage\Sql\remove;
 use function ServiceBus\Storage\Sql\unescapeBinary;
 use function ServiceBus\Storage\Sql\updateQuery;
-use Amp\Promise;
-use Amp\Success;
-use ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified;
-use ServiceBus\Storage\ActiveRecord\Exceptions\UnknownColumn;
-use ServiceBus\Storage\ActiveRecord\Exceptions\UpdateRemovedEntry;
-use ServiceBus\Storage\Common\QueryExecutor;
-use ServiceBus\Storage\Sql\AmpPosgreSQL\AmpPostgreSQLAdapter;
 
 /**
  * @api
- * @todo: pk generation strategy
+ * @todo     : pk generation strategy
+ *
+ * @template T
  */
 abstract class Table
 {
     /**
      * Stored entry identifier.
+     *
+     * @psalm-var non-empty-string|null
      *
      * @var string|null
      */
@@ -52,7 +56,7 @@ abstract class Table
     /**
      * Data collection.
      *
-     * @psalm-var array<string, string|int|float|null>
+     * @psalm-var array<non-empty-string, mixed>
      *
      * @var array
      */
@@ -68,7 +72,7 @@ abstract class Table
     /**
      * Data change list.
      *
-     * @psalm-var array<string, string|int|float|null>
+     * @psalm-var array<non-empty-string, mixed>
      *
      * @var array
      */
@@ -82,7 +86,7 @@ abstract class Table
      *   'title' => 'varchar'
      * ]
      *
-     * @psalm-var array<string, string>
+     * @psalm-var array<non-empty-string, non-empty-string>
      *
      * @var array
      */
@@ -90,11 +94,15 @@ abstract class Table
 
     /**
      * Receive associated table name.
+     *
+     * @psalm-return non-empty-string
      */
     abstract protected static function tableName(): string;
 
     /**
      * Receive primary key name.
+     *
+     * @psalm-return non-empty-string
      */
     protected static function primaryKey(): string
     {
@@ -104,9 +112,9 @@ abstract class Table
     /**
      * Create and persist entry.
      *
-     * @psalm-param array<string, float|int|string|null> $data
+     * @psalm-param array<non-empty-string, float|int|string|null> $data
      *
-     * @return Promise<\ServiceBus\Storage\ActiveRecord\Table>
+     * @psalm-return Promise<T>
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UnknownColumn
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
@@ -117,13 +125,17 @@ abstract class Table
         return call(
             static function () use ($data, $queryExecutor): \Generator
             {
-                /** @var Table $entity */
-                $entity = yield from static::create($queryExecutor, $data, true);
+                /**
+                 * @var Table $entity
+                 */
+                $entity = yield self::create($queryExecutor, $data, true);
 
-                /** @var int|string $result */
+                /** @psalm-var non-empty-string $result */
                 $result = yield $entity->save();
 
-                $entity->insertId = (string) $result;
+                $entity->insertId = $result;
+
+                /** @psalm-var T $entity */
 
                 return $entity;
             }
@@ -133,7 +145,7 @@ abstract class Table
     /**
      * Find entry by primary key.
      *
-     * @return Promise<static|null>
+     * @psalm-return Promise<T|null>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
@@ -149,9 +161,9 @@ abstract class Table
     /**
      * Find one entry by specified criteria.
      *
-     * @psalm-param array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
+     * @psalm-param array<array-key, \Latitude\QueryBuilder\CriteriaInterface> $criteria
      *
-     * @return Promise<static|null>
+     * @psalm-return Promise<T|null>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
@@ -173,24 +185,22 @@ abstract class Table
 
                 if (\is_array($data))
                 {
-                    /** @var static $entry */
-                    $entry = yield from self::create($queryExecutor, $data, false);
-
-                    return $entry;
+                    return yield self::create($queryExecutor, $data, false);
                 }
+
+                return null;
             }
         );
     }
 
     /**
-     * Find entries by specified criteria.
+     * Find entries by specified criteria.                                $orderBy
      *
-     * @psalm-param  array<mixed, \Latitude\QueryBuilder\CriteriaInterface> $criteria
-     * @psalm-param  array<string, string>                      $orderBy
+     * @psalm-param array<array-key, \Latitude\QueryBuilder\CriteriaInterface> $criteria
+     * @psalm-param positive-int|null                                          $limit
+     * @psalm-param array<non-empty-string, non-empty-string>|null             $orderBy
      *
-     * @param \Latitude\QueryBuilder\CriteriaInterface[] $criteria
-     *
-     * @return Promise<list<static>>
+     * @@psalm-return Promise<list<static>>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
@@ -198,15 +208,23 @@ abstract class Table
      */
     final public static function findBy(
         QueryExecutor $queryExecutor,
-        array $criteria = [],
-        ?int $limit = null,
-        array $orderBy = []
+        array         $criteria = [],
+        ?int          $limit = null,
+        ?int          $offset = null,
+        ?array        $orderBy = null
     ): Promise {
         return call(
-            static function () use ($queryExecutor, $criteria, $limit, $orderBy): \Generator
+            static function () use ($queryExecutor, $criteria, $limit, $offset, $orderBy): \Generator
             {
                 /** @var \ServiceBus\Storage\Common\ResultSet $resultSet */
-                $resultSet = yield find($queryExecutor, static::tableName(), $criteria, $limit, $orderBy);
+                $resultSet = yield find(
+                    queryExecutor: $queryExecutor,
+                    tableName: static::tableName(),
+                    criteria: $criteria,
+                    limit: $limit,
+                    offset: $offset,
+                    orderBy: $orderBy
+                );
 
                 /** @var array<string, array<string, string|int|float|null>>|null $rows */
                 $rows = yield fetchAll($resultSet);
@@ -220,7 +238,7 @@ abstract class Table
                     foreach ($rows as $row)
                     {
                         /** @var Table $entry */
-                        $entry    = yield from self::create($queryExecutor, $row, false);
+                        $entry    = yield self::create($queryExecutor, $row, false);
                         $result[] = $entry;
 
                         unset($entry);
@@ -237,7 +255,7 @@ abstract class Table
      *
      * Returns the ID of the saved entry, or the number of affected rows (in the case of an update)
      *
-     * @return Promise<int|string>
+     * @psalm-return Promise<int|non-empty-string>
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
@@ -254,8 +272,8 @@ abstract class Table
                 {
                     $this->changes = [];
 
-                    /** @var int|string $lastInsertId */
-                    $lastInsertId = yield from $this->storeNewEntry($this->data);
+                    /** @psalm-var non-empty-string $lastInsertId */
+                    $lastInsertId = yield $this->storeNewEntry($this->data);
                     $this->isNew  = false;
 
                     return $lastInsertId;
@@ -269,7 +287,7 @@ abstract class Table
                 }
 
                 /** @var int $affectedRows */
-                $affectedRows  = yield from $this->updateExistsEntry($changeSet);
+                $affectedRows  = yield $this->updateExistsEntry($changeSet);
                 $this->changes = [];
 
                 return $affectedRows;
@@ -280,7 +298,7 @@ abstract class Table
     /**
      * Refresh entry data.
      *
-     * @return Promise<void>
+     * @psalm-return Promise<void>
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UpdateRemovedEntry Unable to find an entry (possibly RC
      *                                                                        occurred)
@@ -299,28 +317,24 @@ abstract class Table
                     [equalsCriteria(static::primaryKey(), $this->searchPrimaryKeyValue())]
                 );
 
-                /**
-                 * @psalm-var array<string, string|int|float|null>|null $row
-                 *
-                 * @var array $row
-                 */
                 $row = yield fetchOne($resultSet);
 
                 unset($resultSet);
 
-                if (\is_array($row))
+                if ($row === null)
                 {
-                    $this->changes = [];
-
-                    /** @psalm-var array<string, string|int|null|float> $parameters */
-                    $parameters = unescapeBinary($this->queryExecutor, $row);
-
-                    $this->data = $parameters;
-
-                    return;
+                    throw new UpdateRemovedEntry('Failed to update entity: data has been deleted');
                 }
 
-                throw new UpdateRemovedEntry('Failed to update entity: data has been deleted');
+                $this->changes = [];
+
+                /**
+                 * @psalm-suppress MixedArgumentTypeCoercion
+                 * @psalm-var array<non-empty-string, mixed> $parameters
+                 */
+                $parameters = unescapeBinary($this->queryExecutor, $row);
+
+                $this->data = $parameters;
             }
         );
     }
@@ -328,7 +342,7 @@ abstract class Table
     /**
      * Delete entry.
      *
-     * @return Promise<int>
+     * @psalm-return Promise<int>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
@@ -354,6 +368,8 @@ abstract class Table
 
     /**
      * Receive the ID of the last entry added.
+     *
+     * @psalm-return non-empty-string|null
      */
     final public function lastInsertId(): ?string
     {
@@ -363,7 +379,7 @@ abstract class Table
     /**
      * @codeCoverageIgnore
      *
-     * @psalm-return array<string, mixed>
+     * @psalm-return array<non-empty-string, mixed>
      */
     final public function __debugInfo(): array
     {
@@ -376,9 +392,9 @@ abstract class Table
     }
 
     /**
-     * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UnknownColumn
+     * @psalm-param non-empty-string $name
      *
-     * @return void
+     * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\UnknownColumn
      */
     final public function __set(string $name, float|int|string|null $value): void
     {
@@ -393,15 +409,18 @@ abstract class Table
         throw new UnknownColumn($name, static::tableName());
     }
 
+    /**
+     * @psalm-param non-empty-string $name
+     */
     final public function __isset(string $name): bool
     {
         return isset($this->columns[$name]);
     }
 
     /**
-     * @return float|int|string|null
+     * @psalm-param non-empty-string $name
      */
-    final public function __get(string $name): float|int|string|null
+    final public function __get(string $name): mixed
     {
         return $this->data[$name];
     }
@@ -417,11 +436,9 @@ abstract class Table
     /**
      * Store new entry.
      *
-     * @psalm-suppress InvalidReturnType
+     * @psalm-param array<non-empty-string, mixed> $changeSet
      *
-     * @psalm-param    array<string, string|int|float|null> $changeSet
-     *
-     * @return \Generator<string>
+     * @psalm-return Promise<non-empty-string>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed
@@ -430,56 +447,63 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      */
-    private function storeNewEntry(array $changeSet): \Generator
+    private function storeNewEntry(array $changeSet): Promise
     {
-        $primaryKey = static::primaryKey();
+        return call(
+            function () use ($changeSet): \Generator
+            {
+                $primaryKey = static::primaryKey();
 
-        if (\array_key_exists($primaryKey, $changeSet) === false && \strtolower($this->columns[$primaryKey]) === 'uuid')
-        {
-            $changeSet[$primaryKey] = uuid();
-        }
+                if (
+                    \array_key_exists($primaryKey, $changeSet) === false
+                    && \strtolower($this->columns[$primaryKey]) === 'uuid'
+                ) {
+                    $changeSet[$primaryKey] = uuid();
+                }
 
-        $queryBuilder = insertQuery(static::tableName(), $changeSet);
+                $queryBuilder = insertQuery(static::tableName(), $changeSet);
 
-        /** @todo: fix me */
-        if ($this->queryExecutor instanceof AmpPostgreSQLAdapter)
-        {
-            /**
-             * @var \Latitude\QueryBuilder\Query\Postgres\InsertQuery $queryBuilder
-             */
-            $queryBuilder->returning($primaryKey);
-        }
+                /** @todo: fix me */
+                if ($this->queryExecutor instanceof AmpPostgreSQLAdapter)
+                {
+                    /**
+                     * @var \Latitude\QueryBuilder\Query\Postgres\InsertQuery $queryBuilder
+                     */
+                    $queryBuilder->returning($primaryKey);
+                }
 
-        $compiledQuery = $queryBuilder->compile();
+                $compiledQuery = $queryBuilder->compile();
 
-        /**
-         * @psalm-suppress MixedArgumentTypeCoercion Invalid params() docblock
-         *
-         * @var \ServiceBus\Storage\Common\ResultSet $resultSet
-         */
-        $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
+                /**
+                 * @psalm-suppress MixedArgumentTypeCoercion Invalid params() docblock
+                 *
+                 * @var \ServiceBus\Storage\Common\ResultSet $resultSet
+                 */
+                $resultSet = yield $this->queryExecutor->execute($compiledQuery->sql(), $compiledQuery->params());
 
-        /** @var int|string|null $insertedEntryId */
-        $insertedEntryId = yield $resultSet->lastInsertId();
+                $insertedEntryId = (string) yield $resultSet->lastInsertId();
 
-        unset($queryBuilder, $compiledQuery, $resultSet);
+                if ($insertedEntryId === '')
+                {
+                    throw new \LogicException('Created entity id cant be empty');
+                }
 
-        if (isset($this->data[$primaryKey]) === false)
-        {
-            $this->data[$primaryKey] = (string) $insertedEntryId; // it cant be null
-        }
+                if (isset($this->data[$primaryKey]) === false)
+                {
+                    $this->data[$primaryKey] = $insertedEntryId;
+                }
 
-        return $insertedEntryId;
+                return $insertedEntryId;
+            }
+        );
     }
 
     /**
      * Update exists entry.
      *
-     * @psalm-suppress InvalidReturnType
+     * @psalm-param array<non-empty-string, mixed> $changeSet
      *
-     * @psalm-param    array<string, string|int|float|null> $changeSet
-     *
-     * @return \Generator<int>
+     * @psalm-return Promise<int>
      *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified
      * @throws \ServiceBus\Storage\Common\Exceptions\InvalidConfigurationOptions
@@ -489,43 +513,40 @@ abstract class Table
      * @throws \ServiceBus\Storage\Common\Exceptions\IncorrectParameterCast
      * @throws \ServiceBus\Storage\Common\Exceptions\ResultSetIterationFailed
      */
-    private function updateExistsEntry(array $changeSet): \Generator
+    private function updateExistsEntry(array $changeSet): Promise
     {
-        /**
-         * @var string $query
-         * @var array  $parameters
-         * @psalm-var array<string, string|int|float|null> $parameters
-         */
-        [$query, $parameters] = buildQuery(
-            updateQuery(static::tableName(), $changeSet),
-            [equalsCriteria(static::primaryKey(), $this->searchPrimaryKeyValue())]
+        return call(
+            function () use ($changeSet): \Generator
+            {
+                $queryData = buildQuery(
+                    updateQuery(static::tableName(), $changeSet),
+                    [equalsCriteria(static::primaryKey(), $this->searchPrimaryKeyValue())]
+                );
+
+                /**
+                 * @var \ServiceBus\Storage\Common\ResultSet $resultSet
+                 */
+                $resultSet = yield $this->queryExecutor->execute($queryData['query'], $queryData['parameters']);
+
+                $this->changes = [];
+
+                return $resultSet->affectedRows();
+            }
         );
-
-        /**
-         * @psalm-suppress MixedArgumentTypeCoercion Invalid params() docblock
-         *
-         * @var \ServiceBus\Storage\Common\ResultSet $resultSet
-         */
-        $resultSet = yield $this->queryExecutor->execute($query, $parameters);
-
-        $this->changes = [];
-        $affectedRows  = $resultSet->affectedRows();
-
-        unset($query, $parameters, $resultSet);
-
-        return $affectedRows;
     }
 
     /**
+     * @psalm-return non-empty-string
+     *
      * @throws \ServiceBus\Storage\ActiveRecord\Exceptions\PrimaryKeyNotSpecified Unable to find primary key value
      */
     private function searchPrimaryKeyValue(): string
     {
         $primaryKey = static::primaryKey();
 
-        if (isset($this->data[$primaryKey]) && (string) $this->data[$primaryKey] !== '')
+        if (isset($this->data[$primaryKey]) && \is_string($this->data[$primaryKey]) && $this->data[$primaryKey] !== '')
         {
-            return (string) $this->data[$primaryKey];
+            return $this->data[$primaryKey];
         }
 
         throw new PrimaryKeyNotSpecified($primaryKey);
@@ -534,55 +555,44 @@ abstract class Table
     /**
      * Create entry.
      *
-     * @psalm-suppress MoreSpecificReturnType
+     * @psalm-param array<string, string|int|float|null> $data
      *
-     * @psalm-param    array<string, string|int|float|null> $data
-     *
-     * @return \Generator<static>
+     * @psalm-return Promise<T>
      *
      * @throws \ServiceBus\Storage\Common\Exceptions\StorageInteractingFailed Basic type of interaction errors
      * @throws \ServiceBus\Storage\Common\Exceptions\ConnectionFailed Could not connect to database
      */
-    private static function create(QueryExecutor $queryExecutor, array $data, bool $isNew): \Generator
+    private static function create(QueryExecutor $queryExecutor, array $data, bool $isNew): Promise
     {
-        $metadataExtractor = new MetadataLoader($queryExecutor);
+        return call(
+            function () use ($queryExecutor, $data, $isNew): \Generator
+            {
+                $metadataExtractor = new MetadataLoader($queryExecutor);
+                $entity = new static($queryExecutor);
 
-        $self = new static($queryExecutor);
+                $entity->columns = yield $metadataExtractor->columns(static::tableName());
 
-        /**
-         * @psalm-var array<string, string> $columns
-         *
-         * @var array $columns
-         */
-        $columns = yield $metadataExtractor->columns(static::tableName());
+                if ($isNew === false)
+                {
+                    /**
+                     * @psalm-var array<string, string|int|float|null> $data
+                     */
+                    $data = unescapeBinary($queryExecutor, $data);
+                }
 
-        $self->columns = $columns;
+                foreach ($data as $key => $value)
+                {
+                    $entity->{$key} = $value;
+                }
 
-        if ($isNew === false)
-        {
-            /**
-             * @noinspection CallableParameterUseCaseInTypeContextInspection
-             *
-             * @psalm-var    array<string, string|int|float|null> $data
-             *
-             * @var array $data
-             */
-            $data = unescapeBinary($queryExecutor, $data);
-        }
+                $entity->isNew = $isNew;
 
-        foreach ($data as $key => $value)
-        {
-            $self->{$key} = $value;
-        }
-
-        $self->isNew = $isNew;
-
-        return $self;
+                /** @psalm-var T $entity */
+                return $entity;
+            }
+        );
     }
 
-    /**
-     * @param QueryExecutor $queryExecutor
-     */
     final private function __construct(QueryExecutor $queryExecutor)
     {
         $this->queryExecutor = $queryExecutor;

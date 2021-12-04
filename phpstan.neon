@@ -2,9 +2,3 @@ parameters:
 	checkMissingIterableValueType: false
 	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
-		-
-			message: '#Generator expects value type#'
-			path: %currentWorkingDirectory%/src
-		-
-			message: '#but return statement is missing#'
-			path: %currentWorkingDirectory%/src
